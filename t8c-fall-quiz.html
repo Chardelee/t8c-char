@@ -1,0 +1,589 @@
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Lora:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+.t8c-quiz{--amber:#9F5E23;--amber-dk:#7A4418;--sand:#E2C3A3;--sand-lt:#FAF0E6;--cream:#F6EEE3;--charcoal:#161112;--muted:#9A7E68;--white:#FFFFFF;--teal:#3D8C8C;font-family:'Lora',serif !important;width:100% !important;max-width:600px !important;margin:0 auto !important;padding:20px 0 !important;background:transparent !important;}
+.t8c-quiz *,.t8c-quiz *::before,.t8c-quiz *::after{box-sizing:border-box !important;}
+.t8c-quiz .screen{display:none;animation:t8cFade 0.45s ease;}
+.t8c-quiz .screen.active{display:block;}
+@keyframes t8cFade{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+.t8c-quiz .card{background:var(--white) !important;border-radius:14px !important;padding:48px 44px !important;box-shadow:0 12px 56px rgba(159,94,35,0.10) !important;border:1px solid rgba(159,94,35,0.10) !important;position:relative !important;overflow:hidden !important;margin:0 !important;}
+.t8c-quiz .card::before{content:'';position:absolute !important;top:0;left:0;right:0;height:3px !important;background:linear-gradient(90deg,var(--amber),var(--sand),var(--amber)) !important;}
+.t8c-quiz .track-grid{display:grid !important;grid-template-columns:1fr 1fr !important;gap:14px !important;margin-top:28px !important;}
+.t8c-quiz .track-card{padding:24px 18px !important;border:2px solid var(--sand) !important;border-radius:12px !important;cursor:pointer !important;text-align:center !important;transition:all 0.2s !important;background:var(--white) !important;}
+.t8c-quiz .track-card:hover{border-color:var(--amber) !important;background:var(--sand-lt) !important;transform:translateY(-2px) !important;}
+.t8c-quiz .track-card.selected{border-color:var(--amber) !important;background:var(--sand-lt) !important;}
+.t8c-quiz .track-icon{font-size:28px !important;display:block !important;margin-bottom:10px !important;}
+.t8c-quiz .track-title{font-family:'Playfair Display',serif !important;font-size:16px !important;font-weight:700 !important;color:var(--charcoal) !important;display:block !important;margin-bottom:6px !important;line-height:1.2 !important;}
+.t8c-quiz .track-sub{font-family:'Lora',serif !important;font-size:11px !important;font-style:italic !important;color:var(--muted) !important;line-height:1.5 !important;margin:0 !important;}
+.t8c-quiz .quiz-h1{font-family:'Playfair Display',serif !important;font-size:38px !important;font-weight:700 !important;line-height:1.15 !important;color:var(--charcoal) !important;margin:0 0 12px !important;padding:0 !important;border:none !important;}
+.t8c-quiz .quiz-h1 em{font-style:italic;font-weight:400;color:var(--amber);}
+.t8c-quiz .quiz-h2{font-family:'Playfair Display',serif !important;font-size:28px !important;font-weight:600 !important;line-height:1.25 !important;color:var(--charcoal) !important;margin:0 0 10px !important;padding:0 !important;border:none !important;}
+.t8c-quiz .sub{font-family:'Lora',serif !important;font-size:14px !important;font-weight:300 !important;font-style:italic !important;line-height:1.8 !important;color:var(--muted) !important;margin:0 0 12px !important;padding:0 !important;}
+.t8c-quiz .brand-label{font-family:'Lora',serif !important;font-size:10px !important;font-weight:500 !important;letter-spacing:3px !important;text-transform:uppercase !important;color:var(--amber) !important;display:block !important;margin:0 0 18px !important;}
+.t8c-quiz .progress-wrap{margin-bottom:28px !important;}
+.t8c-quiz .progress-meta{display:flex !important;justify-content:space-between !important;align-items:center !important;margin-bottom:10px !important;}
+.t8c-quiz .progress-label{font-family:'Lora',serif !important;font-size:10px !important;letter-spacing:2px !important;text-transform:uppercase !important;color:var(--muted) !important;margin:0 !important;}
+.t8c-quiz .progress-count{font-family:'Playfair Display',serif !important;font-size:18px !important;font-style:italic !important;color:var(--amber) !important;margin:0 !important;}
+.t8c-quiz .progress-bar{height:2px !important;background:var(--sand-lt) !important;border-radius:2px !important;overflow:hidden !important;}
+.t8c-quiz .progress-fill{height:100% !important;background:linear-gradient(90deg,var(--amber),var(--sand)) !important;border-radius:2px !important;transition:width 0.5s cubic-bezier(.4,0,.2,1) !important;}
+.t8c-quiz .question-text{font-family:'Playfair Display',serif !important;font-size:21px !important;font-weight:600 !important;line-height:1.45 !important;color:var(--charcoal) !important;margin:0 0 22px !important;padding:0 !important;}
+.t8c-quiz .options{display:flex !important;flex-direction:column !important;gap:9px !important;}
+.t8c-quiz .option{display:flex !important;align-items:flex-start !important;gap:14px !important;padding:13px 18px !important;border:1.5px solid var(--sand-lt) !important;border-radius:10px !important;cursor:pointer !important;font-family:'Lora',serif !important;font-size:13.5px !important;font-weight:400 !important;line-height:1.55 !important;color:var(--charcoal) !important;background:var(--white) !important;text-align:left !important;transition:all 0.2s !important;width:100% !important;outline:none !important;box-shadow:none !important;}
+.t8c-quiz .option:hover{border-color:var(--amber) !important;background:var(--cream) !important;transform:translateX(3px) !important;}
+.t8c-quiz .option.selected{border-color:var(--amber) !important;background:var(--sand-lt) !important;}
+.t8c-quiz .opt-letter{width:28px !important;height:28px !important;border-radius:50% !important;background:var(--sand-lt) !important;display:flex !important;align-items:center !important;justify-content:center !important;font-family:'Playfair Display',serif !important;font-size:12px !important;font-weight:600 !important;color:var(--muted) !important;flex-shrink:0 !important;margin-top:1px !important;transition:all 0.2s !important;}
+.t8c-quiz .option.selected .opt-letter{background:var(--amber) !important;color:var(--white) !important;}
+.t8c-quiz .btn{display:inline-block !important;padding:14px 32px !important;border-radius:8px !important;font-family:'Lora',serif !important;font-size:11px !important;font-weight:500 !important;letter-spacing:2px !important;text-transform:uppercase !important;cursor:pointer !important;border:none !important;transition:all 0.2s !important;text-decoration:none !important;text-align:center !important;line-height:1 !important;}
+.t8c-quiz .btn-primary{background:var(--amber) !important;color:var(--white) !important;width:100% !important;margin-top:24px !important;display:block !important;}
+.t8c-quiz .btn-primary:hover{background:var(--amber-dk) !important;}
+.t8c-quiz .btn-primary:disabled{background:var(--sand) !important;color:var(--muted) !important;cursor:not-allowed !important;}
+.t8c-quiz .btn-outline{background:transparent !important;color:var(--amber) !important;border:1.5px solid var(--amber) !important;}
+.t8c-quiz .btn-outline:hover{background:var(--cream) !important;}
+.t8c-quiz .btn-row{display:flex !important;gap:10px !important;margin-top:22px !important;flex-wrap:wrap !important;}
+.t8c-quiz .btn-row .btn{flex:1 !important;min-width:130px !important;margin-top:0 !important;}
+.t8c-quiz .form-group{margin-bottom:18px !important;}
+.t8c-quiz .quiz-label{display:block !important;font-family:'Lora',serif !important;font-size:10px !important;font-weight:500 !important;letter-spacing:2.5px !important;text-transform:uppercase !important;color:var(--muted) !important;margin:0 0 8px !important;}
+.t8c-quiz .quiz-input{width:100% !important;padding:13px 16px !important;border:1.5px solid var(--sand) !important;border-radius:8px !important;font-family:'Lora',serif !important;font-size:15px !important;font-weight:300 !important;color:var(--charcoal) !important;background:var(--white) !important;outline:none !important;transition:border-color 0.2s !important;-webkit-appearance:none !important;box-shadow:none !important;margin:0 !important;}
+.t8c-quiz .quiz-input:focus{border-color:var(--amber) !important;}
+.t8c-quiz .divider{border:none !important;border-top:1px solid var(--sand-lt) !important;margin:24px 0 !important;}
+.t8c-quiz .loading-body{text-align:center !important;padding:60px 20px !important;}
+.t8c-quiz .amber-ring{width:48px !important;height:48px !important;border:2.5px solid var(--sand-lt) !important;border-top-color:var(--amber) !important;border-radius:50% !important;animation:t8cSpin 0.9s linear infinite !important;margin:0 auto 24px !important;}
+@keyframes t8cSpin{to{transform:rotate(360deg);}}
+/* MAKEUP RESULT */
+.t8c-quiz .result-eyebrow{display:inline-block !important;padding:5px 14px !important;background:var(--sand-lt) !important;border:1px solid var(--sand) !important;border-radius:20px !important;font-family:'Lora',serif !important;font-size:10px !important;font-weight:500 !important;letter-spacing:2.5px !important;text-transform:uppercase !important;color:var(--amber) !important;margin-bottom:16px !important;}
+.t8c-quiz .core-label{font-family:'Lora',serif !important;font-size:10px !important;font-weight:500 !important;letter-spacing:2.5px !important;text-transform:uppercase !important;color:var(--amber) !important;margin-bottom:8px !important;display:block !important;}
+.t8c-quiz .result-name{font-family:'Playfair Display',serif !important;font-weight:700 !important;font-size:40px !important;line-height:1.1 !important;color:var(--charcoal) !important;margin:0 0 8px !important;padding:0 !important;}
+.t8c-quiz .result-tagline{font-family:'Playfair Display',serif !important;font-style:italic !important;font-size:17px !important;color:var(--amber) !important;margin:0 0 18px !important;}
+.t8c-quiz .result-desc{font-family:'Lora',serif !important;font-size:14px !important;font-weight:300 !important;font-style:italic !important;line-height:1.85 !important;color:var(--muted) !important;margin:0 0 20px !important;}
+.t8c-quiz .look-box{background:var(--sand-lt) !important;border-left:3px solid var(--amber) !important;padding:16px 18px !important;border-radius:0 8px 8px 0 !important;margin-bottom:14px !important;}
+.t8c-quiz .look-label{font-family:'Lora',serif !important;font-size:10px !important;font-weight:500 !important;letter-spacing:2.5px !important;text-transform:uppercase !important;color:var(--amber) !important;margin-bottom:7px !important;}
+.t8c-quiz .look-text{font-family:'Lora',serif !important;font-size:13px !important;font-weight:400 !important;color:var(--charcoal) !important;line-height:1.7 !important;margin:0 !important;}
+/* PREP POLISH SIGNATURE */
+.t8c-quiz .pps-wrap{background:var(--cream) !important;border:1px solid var(--sand) !important;border-radius:10px !important;padding:18px !important;margin-bottom:20px !important;}
+.t8c-quiz .pps-label{font-family:'Lora',serif !important;font-size:10px !important;font-weight:500 !important;letter-spacing:2.5px !important;text-transform:uppercase !important;color:var(--amber-dk) !important;margin-bottom:14px !important;display:block !important;}
+.t8c-quiz .pps-row{margin-bottom:10px !important;}
+.t8c-quiz .pps-row:last-child{margin-bottom:0 !important;}
+.t8c-quiz .pps-title{font-family:'Lora',serif !important;font-size:10px !important;font-weight:500 !important;letter-spacing:2px !important;text-transform:uppercase !important;color:var(--charcoal) !important;margin-bottom:3px !important;display:block !important;}
+.t8c-quiz .pps-text{font-family:'Lora',serif !important;font-size:12.5px !important;font-weight:300 !important;font-style:italic !important;color:var(--muted) !important;line-height:1.65 !important;margin:0 !important;}
+/* AFTER HOURS */
+.t8c-quiz .after-hours-box{background:rgba(122,68,24,0.07) !important;border-left:3px solid var(--amber-dk) !important;padding:16px 18px !important;border-radius:0 8px 8px 0 !important;margin-bottom:22px !important;}
+.t8c-quiz .after-hours-label{font-family:'Lora',serif !important;font-size:10px !important;font-weight:500 !important;letter-spacing:2.5px !important;text-transform:uppercase !important;color:var(--amber-dk) !important;margin-bottom:7px !important;display:block !important;}
+.t8c-quiz .after-hours-text{font-family:'Lora',serif !important;font-size:13px !important;font-weight:400 !important;color:var(--charcoal) !important;line-height:1.7 !important;margin:0 !important;}
+/* TRINITY */
+.t8c-quiz .trinity-wrap{margin:22px 0 !important;}
+.t8c-quiz .trinity-label{font-family:'Lora',serif !important;font-size:10px !important;font-weight:500 !important;letter-spacing:2.5px !important;text-transform:uppercase !important;color:var(--charcoal) !important;display:block !important;margin-bottom:6px !important;}
+.t8c-quiz .trinity-intro{font-family:'Lora',serif !important;font-size:12px !important;font-style:italic !important;color:var(--muted) !important;line-height:1.6 !important;margin:0 0 14px !important;}
+.t8c-quiz .trinity-grid{display:grid !important;grid-template-columns:1fr 1fr !important;gap:12px !important;}
+.t8c-quiz .trinity-card{padding:16px !important;border:1.5px solid var(--sand-lt) !important;border-radius:10px !important;background:var(--cream) !important;}
+.t8c-quiz .trinity-badge{display:inline-block !important;padding:3px 10px !important;border-radius:12px !important;font-family:'Lora',serif !important;font-size:9px !important;font-weight:500 !important;letter-spacing:2px !important;text-transform:uppercase !important;margin-bottom:8px !important;}
+.t8c-quiz .moon-badge{background:rgba(226,195,163,0.30) !important;color:var(--amber) !important;border:1px solid rgba(226,195,163,0.55) !important;}
+.t8c-quiz .rising-badge{background:rgba(159,94,35,0.08) !important;color:var(--amber-dk) !important;border:1px solid rgba(159,94,35,0.18) !important;}
+.t8c-quiz .trinity-card-name{font-family:'Playfair Display',serif !important;font-weight:600 !important;font-size:14px !important;color:var(--charcoal) !important;margin:0 0 3px !important;line-height:1.3 !important;}
+.t8c-quiz .trinity-card-tagline{font-family:'Playfair Display',serif !important;font-style:italic !important;font-size:11px !important;color:var(--amber) !important;margin:0 0 6px !important;}
+.t8c-quiz .trinity-card-desc{font-family:'Lora',serif !important;font-size:11px !important;font-weight:300 !important;font-style:italic !important;color:var(--muted) !important;line-height:1.65 !important;margin:0 !important;}
+/* GLAMAZINE */
+.t8c-quiz .glamazine-box{background:var(--charcoal) !important;border-radius:10px !important;padding:20px 22px !important;margin-bottom:20px !important;text-align:center !important;}
+.t8c-quiz .glamazine-label{font-family:'Lora',serif !important;font-size:10px !important;font-weight:500 !important;letter-spacing:2.5px !important;text-transform:uppercase !important;color:var(--sand) !important;margin-bottom:8px !important;display:block !important;}
+.t8c-quiz .glamazine-title{font-family:'Playfair Display',serif !important;font-size:18px !important;font-weight:700 !important;color:var(--white) !important;margin:0 0 8px !important;line-height:1.3 !important;}
+.t8c-quiz .glamazine-sub{font-family:'Lora',serif !important;font-size:12px !important;font-style:italic !important;color:var(--sand) !important;margin:0 0 14px !important;line-height:1.6 !important;}
+.t8c-quiz .glamazine-btn{display:inline-block !important;padding:11px 24px !important;background:var(--amber) !important;color:var(--white) !important;border-radius:7px !important;font-family:'Lora',serif !important;font-size:10px !important;font-weight:500 !important;letter-spacing:2px !important;text-transform:uppercase !important;text-decoration:none !important;transition:background 0.2s !important;}
+.t8c-quiz .glamazine-btn:hover{background:var(--amber-dk) !important;}
+/* INNER CIRCLE */
+.t8c-quiz .ic-box{background:var(--sand-lt) !important;border:1px solid var(--sand) !important;border-radius:10px !important;padding:18px 20px !important;margin-bottom:20px !important;}
+.t8c-quiz .ic-label{font-family:'Lora',serif !important;font-size:10px !important;font-weight:500 !important;letter-spacing:2.5px !important;text-transform:uppercase !important;color:var(--amber) !important;margin-bottom:6px !important;display:block !important;}
+.t8c-quiz .ic-title{font-family:'Playfair Display',serif !important;font-size:16px !important;font-weight:700 !important;color:var(--charcoal) !important;margin:0 0 6px !important;}
+.t8c-quiz .ic-desc{font-family:'Lora',serif !important;font-size:12.5px !important;font-weight:300 !important;font-style:italic !important;color:var(--muted) !important;line-height:1.65 !important;margin:0 0 12px !important;}
+.t8c-quiz .ic-free{font-family:'Lora',serif !important;font-size:12px !important;color:var(--charcoal) !important;margin:0 0 10px !important;padding:8px 12px !important;background:rgba(159,94,35,0.07) !important;border-radius:6px !important;}
+.t8c-quiz .ic-upgrade-link{display:block !important;font-family:'Lora',serif !important;font-size:11px !important;font-weight:500 !important;letter-spacing:1px !important;text-transform:uppercase !important;color:var(--amber) !important;text-decoration:underline !important;text-align:center !important;}
+/* SKIN RESULT */
+.t8c-quiz .skin-eyebrow{display:inline-block !important;padding:5px 14px !important;background:rgba(61,140,140,0.08) !important;border:1px solid rgba(61,140,140,0.25) !important;border-radius:20px !important;font-family:'Lora',serif !important;font-size:10px !important;font-weight:500 !important;letter-spacing:2.5px !important;text-transform:uppercase !important;color:var(--teal) !important;margin-bottom:16px !important;}
+.t8c-quiz .skin-number{font-family:'Playfair Display',serif !important;font-size:11px !important;font-weight:400 !important;color:var(--muted) !important;letter-spacing:2px !important;margin:0 0 4px !important;display:block !important;}
+.t8c-quiz .skin-name{font-family:'Playfair Display',serif !important;font-weight:700 !important;font-size:40px !important;line-height:1.1 !important;color:var(--charcoal) !important;margin:0 0 8px !important;padding:0 !important;}
+.t8c-quiz .skin-tagline{font-family:'Playfair Display',serif !important;font-style:italic !important;font-size:17px !important;color:var(--teal) !important;margin:0 0 18px !important;}
+.t8c-quiz .skin-desc{font-family:'Lora',serif !important;font-size:14px !important;font-weight:300 !important;font-style:italic !important;line-height:1.85 !important;color:var(--muted) !important;margin:0 0 20px !important;}
+.t8c-quiz .skin-routine-box{background:rgba(61,140,140,0.05) !important;border-left:3px solid var(--teal) !important;padding:16px 18px !important;border-radius:0 8px 8px 0 !important;margin-bottom:16px !important;}
+.t8c-quiz .skin-routine-label{font-family:'Lora',serif !important;font-size:10px !important;font-weight:500 !important;letter-spacing:2.5px !important;text-transform:uppercase !important;color:var(--teal) !important;margin-bottom:8px !important;display:block !important;}
+.t8c-quiz .skin-routine-step{font-family:'Lora',serif !important;font-size:13px !important;font-weight:400 !important;color:var(--charcoal) !important;line-height:1.8 !important;margin:0 !important;}
+/* SERVICES + NOTICE */
+.t8c-quiz .services-label{font-family:'Lora',serif !important;font-size:10px !important;font-weight:500 !important;letter-spacing:2.5px !important;text-transform:uppercase !important;color:var(--muted) !important;margin-bottom:12px !important;display:block !important;}
+.t8c-quiz .services-list{display:flex !important;flex-direction:column !important;gap:8px !important;margin-bottom:22px !important;}
+.t8c-quiz .service-link{display:flex !important;align-items:center !important;justify-content:space-between !important;padding:12px 16px !important;border:1px solid var(--sand-lt) !important;border-radius:8px !important;font-family:'Lora',serif !important;font-size:13px !important;font-weight:400 !important;color:var(--amber) !important;text-decoration:none !important;transition:all 0.2s !important;background:transparent !important;}
+.t8c-quiz .service-link:hover{background:var(--cream) !important;border-color:var(--amber) !important;}
+.t8c-quiz .email-notice{display:none !important;padding:12px 16px !important;border-radius:8px !important;font-family:'Lora',serif !important;font-size:13px !important;font-weight:300 !important;font-style:italic !important;margin-top:16px !important;}
+.t8c-quiz .email-notice.ok{display:block !important;background:#F5FFF0 !important;color:#3B6E20 !important;border:1px solid #C2E8A0 !important;}
+.t8c-quiz .email-notice.fail{display:block !important;background:#FFF8F5 !important;color:#7A3A1A !important;border:1px solid #EED0B8 !important;}
+.t8c-quiz .screenshot-note{margin-top:18px !important;padding:14px 16px !important;background:var(--sand-lt) !important;border-radius:10px !important;border:1px solid var(--sand) !important;text-align:center !important;}
+.t8c-quiz .screenshot-note p{font-family:'Lora',serif !important;font-size:12px !important;font-weight:300 !important;font-style:italic !important;color:var(--muted) !important;line-height:1.6 !important;margin:0 !important;}
+.t8c-quiz .screenshot-note strong{font-weight:500 !important;color:var(--charcoal) !important;font-style:normal !important;}
+.t8c-quiz .save-results-btn {
+  display:block !important;
+  width:100% !important;
+  padding:13px 20px !important;
+  background:transparent !important;
+  border:1.5px solid var(--amber) !important;
+  border-radius:8px !important;
+  font-family:'Lora',serif !important;
+  font-size:11px !important;
+  font-weight:500 !important;
+  letter-spacing:2px !important;
+  text-transform:uppercase !important;
+  color:var(--amber) !important;
+  cursor:pointer !important;
+  transition:all 0.2s !important;
+  text-align:center !important;
+  margin-top:16px !important;
+}
+.t8c-quiz .save-results-btn:hover { background:var(--cream) !important; }
+@media(max-width:520px){
+  .t8c-quiz .card{padding:34px 20px !important;}
+  .t8c-quiz .quiz-h1{font-size:30px !important;}
+  .t8c-quiz .result-name,.t8c-quiz .skin-name{font-size:32px !important;}
+  .t8c-quiz .track-grid{grid-template-columns:1fr !important;}
+  .t8c-quiz .btn-row{flex-direction:column !important;}
+  .t8c-quiz .btn-row .btn{min-width:100% !important;}
+  .t8c-quiz .trinity-grid{grid-template-columns:1fr !important;}
+}
+</style>
+
+<div class="t8c-quiz">
+  <div class="screen active" id="t8c-s-track">
+    <div class="card">
+      <span class="brand-label">Triple Eight Creative</span>
+      <div class="quiz-h1">Find Your<br><em>Beauty Trinity.</em></div>
+      <p class="sub">Take the Signature Glam Test. Discover your Core, Moon, and Rising — then build your Fall Edit around them.</p>
+      <div class="track-grid">
+        <div class="track-card" id="track-makeup" onclick="selectTrack('makeup')">
+          <span class="track-icon">💄</span>
+          <span class="track-title">I wear makeup</span>
+          <p class="track-sub">Signature Glam path — 5 styles, full Beauty Trinity result</p>
+        </div>
+        <div class="track-card" id="track-skin" onclick="selectTrack('skin')">
+          <span class="track-icon">✨</span>
+          <span class="track-title">I do skincare &amp; grooming</span>
+          <p class="track-sub">Skin Style path — 4 styles, routine-first results</p>
+        </div>
+      </div>
+      <button class="btn btn-primary" id="track-next-btn" onclick="t8cGo('t8c-s-info')" disabled>Continue →</button>
+    </div>
+  </div>
+
+  <div class="screen" id="t8c-s-info">
+    <div class="card">
+      <span class="brand-label">Triple Eight Creative</span>
+      <div class="quiz-h2">Before we begin...</div>
+      <p class="sub">Drop your name and email — we'll send your Beauty Trinity result straight to your inbox.</p>
+      <div class="form-group"><span class="quiz-label">First Name *</span><input class="quiz-input" type="text" id="t8c-fn" placeholder="Your first name"></div>
+      <div class="form-group"><span class="quiz-label">Email Address *</span><input class="quiz-input" type="email" id="t8c-em" placeholder="your@email.com"></div>
+      <button class="btn btn-primary" onclick="t8cStart()">Find My Beauty Trinity →</button>
+    </div>
+  </div>
+
+  <div class="screen" id="t8c-s-question">
+    <div class="card">
+      <div class="progress-wrap">
+        <div class="progress-meta">
+          <span class="progress-label" id="t8c-track-label">Signature Glam Test</span>
+          <span class="progress-count" id="t8c-counter">1 / 5</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="t8c-fill" style="width:20%"></div></div>
+      </div>
+      <div class="question-text" id="t8c-qtext"></div>
+      <div class="options" id="t8c-opts"></div>
+      <button class="btn btn-primary" id="t8c-next" onclick="t8cNext()" disabled>Next →</button>
+    </div>
+  </div>
+
+  <div class="screen" id="t8c-s-loading">
+    <div class="card">
+      <div class="loading-body">
+        <div class="amber-ring"></div>
+        <span class="brand-label" style="display:block;margin-bottom:12px;">Triple Eight Creative</span>
+        <div class="quiz-h2">Reading your Beauty Trinity...</div>
+        <p class="sub">Your Fall Edit result is almost here.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAKEUP RESULT -->
+  <div class="screen" id="t8c-s-result-makeup">
+    <div class="card">
+      <div class="result-eyebrow">✦ Your Beauty Trinity</div>
+      <span class="core-label">✦ Core — Your Beauty Identity</span>
+      <div class="result-name" id="t8c-rname"></div>
+      <div class="result-tagline" id="t8c-rtagline"></div>
+      <p class="result-desc" id="t8c-rdesc"></p>
+      <div class="look-box">
+        <div class="look-label">Fall Beauty Energy</div>
+        <div class="look-text" id="t8c-rfallenergy"></div>
+      </div>
+      <div class="pps-wrap">
+        <span class="pps-label">Prep · Polish · Signature</span>
+        <div class="pps-row"><span class="pps-title">Prep</span><p class="pps-text" id="t8c-rprep"></p></div>
+        <div class="pps-row"><span class="pps-title">Polish</span><p class="pps-text" id="t8c-rpolish"></p></div>
+        <div class="pps-row"><span class="pps-title">Signature</span><p class="pps-text" id="t8c-rsignature"></p></div>
+      </div>
+      <div class="after-hours-box">
+        <div class="after-hours-label">After Hours — Turn It Up</div>
+        <div class="after-hours-text" id="t8c-rafterhours"></div>
+      </div>
+      <hr class="divider">
+      <div class="trinity-wrap">
+        <span class="trinity-label">✦ Your Full Beauty Trinity</span>
+        <p class="trinity-intro">Lead with your Core. Personalize with your Moon. Let your Rising shape how you show up.</p>
+        <div class="trinity-grid">
+          <div class="trinity-card">
+            <div class="trinity-badge moon-badge">☽ Moon</div>
+            <div class="trinity-card-name" id="t8c-moon-name"></div>
+            <div class="trinity-card-tagline" id="t8c-moon-tagline"></div>
+            <p class="trinity-card-desc" id="t8c-moon-desc"></p>
+          </div>
+          <div class="trinity-card">
+            <div class="trinity-badge rising-badge">↑ Rising</div>
+            <div class="trinity-card-name" id="t8c-rising-name"></div>
+            <div class="trinity-card-tagline" id="t8c-rising-tagline"></div>
+            <p class="trinity-card-desc" id="t8c-rising-desc"></p>
+          </div>
+        </div>
+      </div>
+      <hr class="divider">
+      <div class="glamazine-box">
+        <span class="glamazine-label">The Fall Edit GlamaZine</span>
+        <div class="glamazine-title">The September Issue</div>
+        <p class="glamazine-sub">Seasonal beauty notes, Prep / Polish / Signature ideas, product discovery, and guidance for building your signature this fall.</p>
+        <a class="glamazine-btn" href="https://www.tripleeightcreative.com/seasonal-guides/p/theseptemberissue" target="_blank">Get The September Issue</a>
+      </div>
+      <hr class="divider">
+      <span class="services-label">Book Your Fall Edit Services</span>
+      <div class="services-list" id="t8c-services"></div>
+      <hr class="divider">
+      <div class="ic-box">
+        <span class="ic-label">✦ Your Fall Edit Continues</span>
+        <div class="ic-title">Welcome to Inner Circle.</div>
+        <p class="ic-desc">You've found your Beauty Trinity. Your Fall Edit continues inside Inner Circle — deeper recommendations, Char prompts, seasonal product notes, event access, and beauty guidance based on your result.</p>
+        <p class="ic-free">✓ You're now part of Inner Circle Free. Your Beauty Trinity and Fall Edit access are confirmed.</p>
+        <a class="ic-upgrade-link" href="https://buy.stripe.com/9B614oeviaCh7k4gEKgrS0d" target="_blank">Upgrade for deeper guidance, event access + Char anytime →</a>
+      </div>
+      <div class="btn-row">
+        <a class="btn btn-primary" href="https://app.acuityscheduling.com/schedule.php?owner=30467723&appointmentType=category:The%20Fall%20Edit" target="_blank">Book Fall Services</a>
+        <a class="btn btn-outline" id="t8c-pinterest" href="#" target="_blank">Pinterest Board</a>
+      </div>
+      <div class="email-notice" id="t8c-notice-makeup"></div>
+      <button class="save-results-btn" onclick="t8cSaveResults('makeup')">↓ Save My Beauty Trinity</button>
+    </div>
+  </div>
+
+  <!-- SKIN RESULT -->
+  <div class="screen" id="t8c-s-result-skin">
+    <div class="card">
+      <div class="skin-eyebrow">✦ Your Skin Style</div>
+      <span class="skin-number" id="t8c-skin-number"></span>
+      <div class="skin-name" id="t8c-skin-name"></div>
+      <div class="skin-tagline" id="t8c-skin-tagline"></div>
+      <p class="skin-desc" id="t8c-skin-desc"></p>
+      <div class="skin-routine-box">
+        <span class="skin-routine-label">Your Fall Routine Focus</span>
+        <p class="skin-routine-step" id="t8c-skin-routine"></p>
+      </div>
+      <div class="pps-wrap">
+        <span class="pps-label">Prep · Polish · Signature</span>
+        <div class="pps-row"><span class="pps-title">Prep</span><p class="pps-text" id="t8c-skin-prep"></p></div>
+        <div class="pps-row"><span class="pps-title">Polish</span><p class="pps-text" id="t8c-skin-polish"></p></div>
+        <div class="pps-row"><span class="pps-title">Signature</span><p class="pps-text" id="t8c-skin-sig"></p></div>
+      </div>
+      <hr class="divider">
+      <div class="trinity-wrap">
+        <span class="trinity-label" style="color:var(--teal) !important;">✦ Your Skin Style Trinity</span>
+        <p class="trinity-intro">Lead with your Core. Personalize with your Moon. Let your Rising shape how you show up.</p>
+        <div class="trinity-grid">
+          <div class="trinity-card">
+            <div class="trinity-badge moon-badge">☽ Moon</div>
+            <div class="trinity-card-name" id="t8c-skin-moon-name"></div>
+            <div class="trinity-card-tagline" id="t8c-skin-moon-tagline" style="color:var(--teal) !important;"></div>
+            <p class="trinity-card-desc" id="t8c-skin-moon-desc"></p>
+          </div>
+          <div class="trinity-card">
+            <div class="trinity-badge rising-badge">↑ Rising</div>
+            <div class="trinity-card-name" id="t8c-skin-rising-name"></div>
+            <div class="trinity-card-tagline" id="t8c-skin-rising-tagline" style="color:var(--teal) !important;"></div>
+            <p class="trinity-card-desc" id="t8c-skin-rising-desc"></p>
+          </div>
+        </div>
+      </div>
+      <hr class="divider">
+      <div class="glamazine-box">
+        <span class="glamazine-label">The Fall Edit GlamaZine</span>
+        <div class="glamazine-title">The September Issue</div>
+        <p class="glamazine-sub">Seasonal beauty notes, Prep / Polish / Signature ideas, product discovery, and guidance for building your signature this fall.</p>
+        <a class="glamazine-btn" href="https://www.tripleeightcreative.com/seasonal-guides/p/theseptemberissue" target="_blank">Get The September Issue</a>
+      </div>
+      <hr class="divider">
+      <div class="ic-box">
+        <span class="ic-label">✦ Your Fall Edit Continues</span>
+        <div class="ic-title">Welcome to Inner Circle.</div>
+        <p class="ic-desc">You've found your Skin Style. Your Fall Edit continues inside Inner Circle — deeper recommendations, Char prompts, seasonal product notes, event access, and guidance based on your result.</p>
+        <p class="ic-free">✓ You're now part of Inner Circle Free. Your Skin Style and Fall Edit access are confirmed.</p>
+        <a class="ic-upgrade-link" href="https://buy.stripe.com/9B614oeviaCh7k4gEKgrS0d" target="_blank">Upgrade for deeper guidance, event access + Char anytime →</a>
+      </div>
+      <span class="services-label">Work With Triple Eight Creative</span>
+      <div class="services-list">
+        <a class="service-link" href="https://www.tripleeightcreative.com" target="_blank"><span>Explore All Services</span><span>→</span></a>
+        <a class="service-link" href="https://app.acuityscheduling.com/schedule.php?owner=30467723&appointmentType=category:The%20Fall%20Edit" target="_blank"><span>Book Fall Edit Services</span><span>→</span></a>
+      </div>
+      <div class="btn-row">
+        <a class="btn btn-primary" href="https://app.acuityscheduling.com/schedule.php?owner=30467723&appointmentType=category:The%20Fall%20Edit" target="_blank">Book a Service</a>
+        <a class="btn btn-outline" href="https://pin.it/3FIBZXcDV" target="_blank">View Style Board</a>
+      </div>
+      <div class="email-notice" id="t8c-notice-skin"></div>
+      <button class="save-results-btn" onclick="t8cSaveResults('skin')">↓ Save My Skin Style</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const MC_URL="https://tripleeightcreative.us12.list-manage.com/subscribe/post-json?u=bf55e5adf70df561dda6c1ab1&id=2200d8b42d&f_id=00c5ffe3f0";
+  const FALL_SVC="https://app.acuityscheduling.com/schedule.php?owner=30467723&appointmentType=category:The%20Fall%20Edit";
+  const SIG_SVC="https://app.acuityscheduling.com/schedule.php?owner=30467723&appointmentType=category:Signature%20Glam%20Services%20";
+
+  let activeTrack=null,currentQ=0,answers=[],user={firstName:'',email:''};
+
+  window.selectTrack=function(t){activeTrack=t;document.querySelectorAll('.t8c-quiz .track-card').forEach(c=>c.classList.remove('selected'));document.getElementById('track-'+t).classList.add('selected');document.getElementById('track-next-btn').disabled=false;};
+  window.t8cGo=function(id){document.querySelectorAll('.t8c-quiz .screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');const top=document.querySelector('.t8c-quiz').getBoundingClientRect().top;if(top<0)window.scrollTo({top:window.scrollY+top-20,behavior:'smooth'});};
+  window.t8cStart=function(){const fn=document.getElementById('t8c-fn').value.trim(),em=document.getElementById('t8c-em').value.trim();if(!fn){alert("Please enter your first name.");return;}if(!em||!em.includes('@')){alert("Please enter a valid email address.");return;}user={firstName:fn,email:em};currentQ=0;answers=[];document.getElementById('t8c-track-label').textContent=activeTrack==='skin'?'Skin Style Test':'Signature Glam Test';renderQ(0);t8cGo('t8c-s-question');};
+
+  const MAKEUP_Q=[
+    {text:"What's your Fall beauty approach?",opts:[
+      {l:"A",t:"Rich, saturated, structured — deeper color that tells the room exactly who I am.",type:"statement"},
+      {l:"B",t:"Warm, romantic, considered — skin that glows under fall light with intention.",type:"softpower"},
+      {l:"C",t:"Skin-first, luminous, intentional — my prep does the work this season.",type:"highgloss"},
+      {l:"D",t:"One unexpected detail — a texture or color nobody else in the room is doing.",type:"wildcard"},
+      {l:"E",t:"Same crisp structure, richer color story — precise, polished, and seasonally updated.",type:"classic"}
+    ]},
+    {text:"Which Fall moment fits your energy?",opts:[
+      {l:"A",t:"A dinner reservation where your lip color does all the talking before you say a word.",type:"statement"},
+      {l:"B",t:"A gallery opening — warm skin, a soft stain, romantic and completely considered.",type:"softpower"},
+      {l:"C",t:"A morning meeting where your skin looks like you slept well and prepped right.",type:"highgloss"},
+      {l:"D",t:"A panel or event where one detail makes everyone ask what you're wearing.",type:"wildcard"},
+      {l:"E",t:"A structured Fall evening in a look that always photographs right, season after season.",type:"classic"}
+    ]},
+    {text:"Pick your Fall non-negotiable.",opts:[
+      {l:"A",t:"One bold feature — a deep lip or graphic liner — that anchors the entire look.",type:"statement"},
+      {l:"B",t:"Skin that looks cared for — warm, satin, and intentional underneath everything.",type:"softpower"},
+      {l:"C",t:"A base that disappears and lets your actual skin show through.",type:"highgloss"},
+      {l:"D",t:"One color or texture moment that surprises — in the most considered way.",type:"wildcard"},
+      {l:"E",t:"Crisp liner. A polished lip. Structure that holds through every moment of the day.",type:"classic"}
+    ]},
+    {text:"What are you building this season?",opts:[
+      {l:"A",t:"A richer, more saturated version of my signature — deeper tones, more intentional.",type:"statement"},
+      {l:"B",t:"A warmer, more romantic routine — deeper blush tones, a lip stain that feels like me.",type:"softpower"},
+      {l:"C",t:"Better skin prep — the kind that makes everything else feel easier and look better.",type:"highgloss"},
+      {l:"D",t:"A new signature detail — something I haven't tried yet that keeps calling my name.",type:"wildcard"},
+      {l:"E",t:"The same discipline with a fall color upgrade — same precision, new depth.",type:"classic"}
+    ]},
+    {text:"Which Fall detail is calling your name?",opts:[
+      {l:"A",t:"Deep berry lip or espresso liner — rich, saturated, and completely on purpose.",type:"statement"},
+      {l:"B",t:"Cream blush in fig or warm rose, a tinted stain that looks like I was born wearing it.",type:"softpower"},
+      {l:"C",t:"Skin tint over bare skin, strategic highlight, SPF as my final step every morning.",type:"highgloss"},
+      {l:"D",t:"An unexpected liner placement, a surprising shadow, or one textured detail nobody expected.",type:"wildcard"},
+      {l:"E",t:"A deep burgundy or true red lip on a clean, structured base — timeless, just richer.",type:"classic"}
+    ]}
+  ];
+
+  const SKIN_Q=[
+    {text:"How do you approach getting ready this fall?",opts:[
+      {l:"A",t:"Simple and efficient — clean skin, SPF, and out the door.",type:"cleanslate"},
+      {l:"B",t:"My ritual still happens — each step is intentional, just adjusted for the season.",type:"glowritual"},
+      {l:"C",t:"I want to look groomed and precise, even on a low-effort day.",type:"sharpdetail"},
+      {l:"D",t:"Protection and resilience — fall is when I double down on barrier care.",type:"grounded"},
+      {l:"E",t:"I have products but I'm not sure they're right for the season shift.",type:"sharpdetail"}
+    ]},
+    {text:"What matters most to your skin as the season shifts?",opts:[
+      {l:"A",t:"Staying clean and clear without overcomplicating things.",type:"cleanslate"},
+      {l:"B",t:"That it glows — hydrated, luminous, intentional even as the air gets drier.",type:"glowritual"},
+      {l:"C",t:"That it stays groomed and defined without feeling heavy.",type:"sharpdetail"},
+      {l:"D",t:"That it's protected and resilient — barrier strength is everything this time of year.",type:"grounded"},
+      {l:"E",t:"That my routine actually makes sense and the products work together this fall.",type:"sharpdetail"}
+    ]},
+    {text:"Which fall morning describes you?",opts:[
+      {l:"A",t:"Cleanser, lightweight moisturizer, SPF — simple is the strategy.",type:"cleanslate"},
+      {l:"B",t:"Skincare is the best part of my morning, just with richer textures now.",type:"glowritual"},
+      {l:"C",t:"I like to look intentional and polished even before I've had coffee.",type:"sharpdetail"},
+      {l:"D",t:"I treat my skin like a long-term investment — especially when the weather shifts.",type:"grounded"},
+      {l:"E",t:"I use a few things but the routine feels like it could be more intentional.",type:"sharpdetail"}
+    ]},
+    {text:"Pick your Fall skin priority:",opts:[
+      {l:"A",t:"Learning the right 3 steps and doing them consistently.",type:"cleanslate"},
+      {l:"B",t:"Luminosity and hydration that holds as the air gets drier.",type:"glowritual"},
+      {l:"C",t:"Definition and polish without adding heaviness.",type:"sharpdetail"},
+      {l:"D",t:"Barrier strength and real protection through the season change.",type:"grounded"},
+      {l:"E",t:"Building a routine that's intentional and actually designed for fall.",type:"sharpdetail"}
+    ]},
+    {text:"What does feeling put together mean to you this season?",opts:[
+      {l:"A",t:"Clean, clear skin — I just want to know I'm doing the right things.",type:"cleanslate"},
+      {l:"B",t:"Glowing and intentional, even on a quiet day.",type:"glowritual"},
+      {l:"C",t:"Sharp, groomed, considered — like I thought about every step.",type:"sharpdetail"},
+      {l:"D",t:"Protected and resilient — skin that can handle whatever the season brings.",type:"grounded"},
+      {l:"E",t:"Using what I have with real intention and seeing results that hold.",type:"sharpdetail"}
+    ]}
+  ];
+
+  const MAKEUP_RESULTS={
+    statement:{name:"The Statement Maker",tagline:"Bold. Saturated. Structured.",desc:"Fall gives your Statement Maker identity something it's been waiting for: permission to go richer. Deep berry, espresso, burgundy, and graphic liner that holds all day. The structure was already there — this season the color gets more intentional and the look gets more considered.",fallEnergy:"Rich, saturated, and on purpose. Your Fall Edit is built on one bold feature that leads every look — deeper lip, sharper liner, one saturated detail that tells the room everything it needs to know.",prep:"A skin-first base that lets the feature lead. Barrier mist, lightweight coverage, nothing that competes with the color.",polish:"Graphic liner or a deep saturated lip — one at a time. Everything else stays clean and deliberate.",signature:"Black cherry lip. Espresso liner. One rich, intentional detail that makes the room remember you.",afterhours:"Deepen the lip to black cherry or oxblood, sharpen the liner edge, one more coat of mascara. Same statement — more atmosphere.",borrow:"Swap one neutral for something deeper — a berry liner, a burgundy blush, a rich lip. Keep the structure clean so the feature lands.",pinterest:"https://pin.it/1fOIvOm2g"},
+    softpower:{name:"The Soft Power",tagline:"Warm. Romantic. Considered.",desc:"Soft Power in fall is what happens when your care starts to show. The warmth shifts — peach and coral give way to fig, plum, and amber. Everything softens and deepens at the same time. Your look reads intimate, layered, and effortlessly considered.",fallEnergy:"Warm, layered, and romantic. Your Fall Edit is built on satin skin, warmer tones, and a gloss or stain that looks like you were born wearing it.",prep:"A hydrating base that shows your skin's texture. Glow serum under a skin tint — nothing that flattens the warmth.",polish:"Cream blush in fig or warm rose. A tinted gloss or lip stain in a deeper, more autumnal tone.",signature:"Champagne glow at the inner corner. A fig or plum lip. The romantic detail that makes people ask what you're wearing.",afterhours:"Deepen the lip to a plum or berry stain, sweep blush higher, add one warm bronze detail. Still soft — just more intentional under low light.",borrow:"Deepen your usual blush to a warmer, richer tone and try a lip stain where you'd usually wear gloss. Fall gives Soft Power more dimension.",pinterest:"https://pin.it/1fOIvOm2g"},
+    highgloss:{name:"The High Gloss",tagline:"Luminous. Skin-First. Intentional.",desc:"Fall High Gloss is not less — it's more refined. Your prep does the work. Barrier skin, strategic glow, a base that disappears and lets your actual skin lead. This season your luminosity reads intentional because you know exactly what you did to get there.",fallEnergy:"Refined and luminous. Your Fall Edit is built on prep — barrier skin, intentional highlight, a base that looks like good skin, not good coverage.",prep:"Barrier serum, SPF, a skin tint or nothing. Your prep is the whole look — protect what you built all year.",polish:"Strategic highlight at cheekbones only. A translucent lip gloss or balm. Nothing that reads heavy or competes.",signature:"Champagne glow placed with intention. The skin detail that makes people think you just came back from somewhere good.",afterhours:"Add a deeper bronzer for dimension and a glossy lip with just enough shimmer to catch the light. The glow stays the same — it just reads differently in low light.",borrow:"Let your skin be the statement. Lightweight base, one precise highlight. Add one bold blush pop swept to the temples — your prep earns the attention.",pinterest:"https://pin.it/R7JJ3GAip"},
+    wildcard:{name:"The Wild Card",tagline:"Unexpected. Textured. Singular.",desc:"Fall is your season for intention, not just experimentation. This is where you step into something richer — unexpected liner placement, a textured detail, a color that surprises in a considered way. One bold accent. Everything else clean and deliberate.",fallEnergy:"Singular and considered. Your Fall Edit is built on one unexpected detail — a surprising liner placement, a deep or unusual color, or a texture nobody else in the room is wearing.",prep:"A clean, neutral base that lets the detail lead. Nothing competing with your one intentional choice.",polish:"One unexpected element — a smoked lower lash line, a graphic inner corner, an unusual shadow placement. Everywhere else: clean.",signature:"Soft smoke in an unexpected color. A liner detail that surprises. One textured, considered choice that makes the look memorable.",afterhours:"Make the detail richer — same color, more depth and dimension under low light. The accent gets more intentional, not louder.",borrow:"Choose one unexpected detail — a deep or unusual liner, an unconventional placement — and keep everything else stripped. One move. Maximum impact.",pinterest:"https://pin.it/1fOIvOm2g"},
+    classic:{name:"The Eternal Classic",tagline:"Crisp. Refined. Seasonally Rich.",desc:"Fall gives the Eternal Classic a richer color story without touching the structure. Same crisp liner. Same polished discipline. The lip upgrades — burgundy, deep red, true plum — and the palette deepens. Classic in its truest form: the structure is so good, the color gets to be the whole update.",fallEnergy:"Structured and rich. Your Fall Edit is built on crisp liner, a deeper or bolder lip, and a polished base that holds through every moment.",prep:"A polished, controlled base. Pore-minimizing primer, a foundation that photographs clean, nothing that shifts.",polish:"Crisp liner — sharp wing or tight-line. Lifted, refined blush. The polish that makes everything else land.",signature:"A burgundy or deep red lip on a clean, structured base. The classic detail that doesn't need updating — just a seasonal color shift.",afterhours:"Deepen the lip to an oxblood or true burgundy, sharpen the liner one notch. Same precision. More atmosphere.",borrow:"Keep the crisp liner and structure you trust — just give the lip a fall upgrade. Same discipline, same precision. Totally new depth.",pinterest:"https://pin.it/6wtEVd5rC"}
+  };
+
+  const SKIN_RESULTS={
+    cleanslate:{number:"01",name:"The Clean Slate",tagline:"Fresh. Clarified. Starting From Good Skin.",desc:"Fall is the right moment to reset. Your skin responds best to simplicity and consistency — and the season shift is your invitation to build the right three steps and stop guessing. The Clean Slate is not starting over. It is a clearing so that what you add next actually works.",routine:"Gentle cleanser → Lightweight moisturizer that adjusts with the cooler weather → SPF every morning without exception. Those three steps done consistently beat a 10-step routine done randomly.",prep:"A gentle cleanser that doesn't strip, a moisturizer that adapts as the air gets drier, and SPF every single morning.",polish:"One skin tint or tinted moisturizer to even things out without adding heaviness. Clear brow gel if you want definition without effort.",sig:"The moment your skin starts to glow from the inside — that clean, clarified finish that happens when your routine is finally right.",borrow:"Add one hydrating serum — hyaluronic acid or a barrier mist — between your moisturizer and SPF. That one step is where Clean Slate becomes Glow Ritual."},
+    glowritual:{number:"02",name:"The Glow Ritual",tagline:"Intentional. Luminous. Seasonally Adjusted.",desc:"Your ritual doesn't pause for fall — it deepens. You already know great skin is built over time. This season the shift is toward richer textures, barrier support, and actives that work harder as the air gets drier. Your consistency is already there. Now the ingredients get more intentional.",routine:"Vitamin C serum (AM) → Richer hydrating moisturizer or a facial oil pressed underneath → SPF → Barrier mist for midday support. Retinol or peptide serum in your PM routine.",prep:"A richer moisturizer or a few drops of facial oil pressed into damp skin before your base. Your glow needs more support as temperatures drop.",polish:"A tinted SPF or a skin tint that lets your glow show through. Strategic highlight on the high points only.",sig:"Champagne glow — intentional, placed, and luminous. The skin finish that makes people ask if you just came back from somewhere.",borrow:"Add one nourishing facial oil pressed over your moisturizer in the evening. That one step is where Glow Ritual starts to become Grounded."},
+    sharpdetail:{number:"03",name:"The Sharp Detail",tagline:"Groomed. Precise. Intentionally Seasonal.",desc:"Fall is your season. The precision you've been building all year lands differently when the air is crisp and the palette deepens. Every step is deliberate. Every product has a purpose. Whether you are refining what you have or building something new, your standard stays high.",routine:"Cleanser → Richer moisturizer or barrier cream → SPF → Brow gel → Skin tint or tinted moisturizer → Spot concealer if needed → Light powder in oil-prone areas. Intentional, not heavy.",prep:"A richer moisturizer or barrier cream under a lightweight skin tint. The base that makes the polish land.",polish:"Groomed brows, a skin tint with coverage where you need it, and a clean finish that reads precise without reading heavy.",sig:"The groomed detail that makes you look like you thought about every step — clean brows, defined skin, one finish product that does its job quietly.",borrow:"Add a vitamin C or niacinamide serum underneath your skin tint. Your polish reads deeper when it's built on long-term results."},
+    grounded:{number:"04",name:"The Grounded",tagline:"Authentic. Protective. Seasonally Resilient.",desc:"Fall is your strongest season. You've been building barrier strength all year and as the weather shifts, that investment shows. You're not chasing the season — you're ready for it. Repair, protection, and resilience are your language and your routine already speaks it.",routine:"Gentle exfoliant (2x per week max in cooler weather) → Rich barrier cream → SPF → Healing balm for lips and dry patches. Ceramide or peptide-rich repair serum in your PM routine.",prep:"A rich barrier cream applied while your skin is still slightly damp. Your protection is the foundation — everything else sits on top of it.",polish:"A tinted SPF or a skin balm that gives a natural, healthy finish without adding product weight.",sig:"The resilient, protected skin that looks like health — not effort. The glow that comes from a barrier that's working.",borrow:"Add one intentional grooming or finish detail — a tinted SPF, a clean brow moment — and let your protection be the foundation it already is."}
+  };
+
+  function renderQ(idx){const qs=activeTrack==='skin'?SKIN_Q:MAKEUP_Q,q=qs[idx];document.getElementById('t8c-counter').textContent=`${idx+1} / 5`;document.getElementById('t8c-fill').style.width=((idx+1)/5*100)+'%';document.getElementById('t8c-qtext').textContent=q.text;const opts=document.getElementById('t8c-opts');opts.innerHTML='';q.opts.forEach((opt,i)=>{const btn=document.createElement('button');btn.className='option';btn.innerHTML=`<span class="opt-letter">${opt.l}</span><span>${opt.t}</span>`;btn.addEventListener('click',()=>pick(i,opt.type));opts.appendChild(btn);});const nb=document.getElementById('t8c-next');nb.disabled=true;nb.textContent=idx===4?'See My Beauty Trinity ✦':'Next →';}
+
+  function pick(i,type){document.querySelectorAll('.t8c-quiz .option').forEach(o=>o.classList.remove('selected'));document.querySelectorAll('.t8c-quiz .option')[i].classList.add('selected');answers[currentQ]=type;document.getElementById('t8c-next').disabled=false;}
+
+  window.t8cNext=function(){if(currentQ<4){currentQ++;renderQ(currentQ);document.querySelectorAll('.t8c-quiz .option').forEach(o=>o.classList.remove('selected'));document.getElementById('t8c-next').disabled=true;}else{reveal();}};
+
+  function scoreMakeup(){const order=['statement','softpower','highgloss','wildcard','classic'],tally={};order.forEach(t=>{tally[t]=0;});answers.forEach(t=>{tally[t]++;});return order.map(t=>({type:t,count:tally[t]})).sort((a,b)=>b.count!==a.count?b.count-a.count:order.indexOf(a.type)-order.indexOf(b.type));}
+  function scoreSkin(){const order=['cleanslate','glowritual','sharpdetail','grounded'],tally={};order.forEach(t=>{tally[t]=0;});answers.forEach(t=>{tally[t]++;});return order.map(t=>({type:t,count:tally[t]})).sort((a,b)=>b.count!==a.count?b.count-a.count:order.indexOf(a.type)-order.indexOf(b.type));}
+
+  function reveal(){t8cGo('t8c-s-loading');setTimeout(()=>{activeTrack==='skin'?revealSkin():revealMakeup();},2200);}
+
+  function revealMakeup(){const ranked=scoreMakeup(),sun=MAKEUP_RESULTS[ranked[0].type],moon=MAKEUP_RESULTS[ranked[1].type],rising=MAKEUP_RESULTS[ranked[2].type];
+    document.getElementById('t8c-rname').textContent=sun.name;
+    document.getElementById('t8c-rtagline').textContent=sun.tagline;
+    document.getElementById('t8c-rdesc').textContent=sun.desc;
+    document.getElementById('t8c-rfallenergy').textContent=sun.fallEnergy;
+    document.getElementById('t8c-rprep').textContent=sun.prep;
+    document.getElementById('t8c-rpolish').textContent=sun.polish;
+    document.getElementById('t8c-rsignature').textContent=sun.signature;
+    document.getElementById('t8c-rafterhours').textContent=sun.afterhours;
+    document.getElementById('t8c-pinterest').href=sun.pinterest;
+    document.getElementById('t8c-services').innerHTML=`<a class="service-link" href="${FALL_SVC}" target="_blank"><span>Book Fall Edit Services</span><span>→</span></a><a class="service-link" href="${SIG_SVC}" target="_blank"><span>Signature Glam Services</span><span>→</span></a><a class="service-link" href="https://shopmy.us/chardesmithbeauty/shop-the-fall-edit:-structured" target="_blank"><span>Shop The Fall Edit — curated picks ✦</span><span>→</span></a>`;
+    document.getElementById('t8c-moon-name').textContent=moon.name;
+    document.getElementById('t8c-moon-tagline').textContent=moon.tagline;
+    document.getElementById('t8c-moon-desc').textContent=moon.borrow;
+    document.getElementById('t8c-rising-name').textContent=rising.name;
+    document.getElementById('t8c-rising-tagline').textContent=rising.tagline;
+    document.getElementById('t8c-rising-desc').textContent=rising.borrow;
+    t8cGo('t8c-s-result-makeup');
+    sendToMailchimp(sun.name,moon.name,rising.name,'makeup');}
+
+  function revealSkin(){const ranked=scoreSkin(),sun=SKIN_RESULTS[ranked[0].type],moon=SKIN_RESULTS[ranked[1].type],rising=SKIN_RESULTS[ranked[2].type];
+    document.getElementById('t8c-skin-number').textContent=sun.number;
+    document.getElementById('t8c-skin-name').textContent=sun.name;
+    document.getElementById('t8c-skin-tagline').textContent=sun.tagline;
+    document.getElementById('t8c-skin-desc').textContent=sun.desc;
+    document.getElementById('t8c-skin-routine').textContent=sun.routine;
+    document.getElementById('t8c-skin-prep').textContent=sun.prep;
+    document.getElementById('t8c-skin-polish').textContent=sun.polish;
+    document.getElementById('t8c-skin-sig').textContent=sun.sig;
+    document.getElementById('t8c-skin-moon-name').textContent=moon.name;
+    document.getElementById('t8c-skin-moon-tagline').textContent=moon.tagline;
+    document.getElementById('t8c-skin-moon-desc').textContent=moon.borrow;
+    document.getElementById('t8c-skin-rising-name').textContent=rising.name;
+    document.getElementById('t8c-skin-rising-tagline').textContent=rising.tagline;
+    document.getElementById('t8c-skin-rising-desc').textContent=rising.borrow;
+    t8cGo('t8c-s-result-skin');
+    sendToMailchimp(sun.name,moon.name,rising.name,'skin');}
+
+  function sendToMailchimp(glamtype,moon,rising,track){
+    const noticeId=track==='skin'?'t8c-notice-skin':'t8c-notice-makeup';
+    const notice=document.getElementById(noticeId);
+    const params={EMAIL:user.email,FNAME:user.firstName,GLAMTYPE:glamtype,MOON:moon,RISING:rising,SKINTYPE:track==='skin'?'Skin Style':'Signature Glam',SOURCE:track==='skin'?'Skin Style Test':'Signature Glam Test','b_bf55e5adf70df561dda6c1ab1_2200d8b42d':''};
+    const qs=Object.entries(params).map(([k,v])=>`${encodeURIComponent(k)}=${encodeURIComponent(v)}`).join('&');
+    const cbName='t8cMc'+Date.now();
+    window[cbName]=function(data){delete window[cbName];if(script.parentNode)script.parentNode.removeChild(script);if(data.result==='success'||(data.result==='error'&&data.msg.includes('already subscribed'))){notice.className='email-notice ok';notice.textContent=`✓ Your Beauty Trinity has been sent to ${user.email}`;}else{notice.className='email-notice fail';notice.textContent="Couldn't email right now — your results are right here!";}};
+    const script=document.createElement('script');script.src=MC_URL+'&'+qs+'&c='+cbName;document.body.appendChild(script);}
+
+  window.t8cSaveResults = function(track) {
+    var lines = ['✦ YOUR BEAUTY TRINITY', 'Triple Eight Creative — The Fall Edit: Structured', ''];
+
+    if (track === 'makeup') {
+      var core   = document.getElementById('t8c-rname').textContent;
+      var tag    = document.getElementById('t8c-rtagline').textContent;
+      var energy = document.getElementById('t8c-rfallenergy').textContent;
+      var prep   = document.getElementById('t8c-rprep').textContent;
+      var polish = document.getElementById('t8c-rpolish').textContent;
+      var sig    = document.getElementById('t8c-rsignature').textContent;
+      var ah     = document.getElementById('t8c-rafterhours').textContent;
+      var moonN  = document.getElementById('t8c-moon-name').textContent;
+      var risingN= document.getElementById('t8c-rising-name').textContent;
+
+      lines.push('CORE — ' + core);
+      lines.push(tag);
+      lines.push('');
+      lines.push('FALL BEAUTY ENERGY');
+      lines.push(energy);
+      lines.push('');
+      lines.push('PREP: ' + prep);
+      lines.push('POLISH: ' + polish);
+      lines.push('SIGNATURE: ' + sig);
+      lines.push('');
+      lines.push('AFTER HOURS: ' + ah);
+      lines.push('');
+      lines.push('YOUR BEAUTY TRINITY');
+      lines.push('Moon: ' + moonN);
+      lines.push('Rising: ' + risingN);
+    } else {
+      var core   = document.getElementById('t8c-skin-name').textContent;
+      var tag    = document.getElementById('t8c-skin-tagline').textContent;
+      var routine= document.getElementById('t8c-skin-routine').textContent;
+      var prep   = document.getElementById('t8c-skin-prep').textContent;
+      var polish = document.getElementById('t8c-skin-polish').textContent;
+      var sig    = document.getElementById('t8c-skin-sig').textContent;
+      var moonN  = document.getElementById('t8c-skin-moon-name').textContent;
+      var risingN= document.getElementById('t8c-skin-rising-name').textContent;
+
+      lines.push('CORE — ' + core);
+      lines.push(tag);
+      lines.push('');
+      lines.push('FALL ROUTINE FOCUS');
+      lines.push(routine);
+      lines.push('');
+      lines.push('PREP: ' + prep);
+      lines.push('POLISH: ' + polish);
+      lines.push('SIGNATURE: ' + sig);
+      lines.push('');
+      lines.push('YOUR BEAUTY TRINITY');
+      lines.push('Moon: ' + moonN);
+      lines.push('Rising: ' + risingN);
+    }
+
+    lines.push('');
+    lines.push('The September Issue GlamaZine:');
+    lines.push('https://www.tripleeightcreative.com/seasonal-guides/p/theseptemberissue');
+    lines.push('');
+    lines.push('Continue inside Inner Circle:');
+    lines.push('https://buy.stripe.com/9B614oeviaCh7k4gEKgrS0d');
+    lines.push('');
+    lines.push('tripleeightcreative.com');
+
+    var text = lines.join('\n');
+
+    if (navigator.share) {
+      navigator.share({
+        title: 'My Beauty Trinity — Triple Eight Creative',
+        text: text
+      }).catch(function(){});
+    } else {
+      navigator.clipboard.writeText(text).then(function() {
+        var btns = document.querySelectorAll('.t8c-quiz .save-results-btn');
+        btns.forEach(function(b) {
+          var orig = b.textContent;
+          b.textContent = '✓ Copied to clipboard';
+          setTimeout(function() { b.textContent = orig; }, 2500);
+        });
+      }).catch(function() {
+        var win = window.open('', '_blank');
+        win.document.write('<pre style="font-family:Georgia,serif;padding:24px;max-width:620px;margin:0 auto;line-height:1.7;">' + text.replace(/</g,'&lt;') + '</pre>');
+        win.document.close();
+      });
+    }
+  };
+
+})();
+</script>

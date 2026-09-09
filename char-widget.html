@@ -1,0 +1,1296 @@
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Lora:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
+
+<style>
+.char-wrap {
+  --amber:    #9F5E23;
+  --amber-dk: #7A4418;
+  --sand:     #E2C3A3;
+  --sand-lt:  #FAF0E6;
+  --cream:    #F6EEE3;
+  --charcoal: #161112;
+  --muted:    #9A7E68;
+  --white:    #FFFFFF;
+  --magenta:  #CD136D;
+
+  font-family: 'Lora', serif !important;
+  width: 100% !important;
+  max-width: 680px !important;
+  margin: 0 auto !important;
+  padding: 20px 0 !important;
+  background: transparent !important;
+}
+
+.char-wrap *, .char-wrap *::before, .char-wrap *::after {
+  box-sizing: border-box !important;
+}
+
+/* ── ONBOARDING ── */
+.char-onboard {
+  background: var(--white) !important;
+  border-radius: 16px !important;
+  padding: 52px 48px !important;
+  box-shadow: 0 12px 56px rgba(159,94,35,0.10) !important;
+  border: 1px solid rgba(159,94,35,0.10) !important;
+  position: relative !important;
+  overflow: hidden !important;
+  animation: charFade 0.5s ease !important;
+  margin: 0 !important;
+}
+
+.char-onboard::before {
+  content:'';
+  position:absolute;
+  top:0; left:0; right:0;
+  height:3px;
+  background: linear-gradient(90deg, var(--amber), var(--sand), var(--magenta));
+}
+
+.char-avatar-wrap {
+  display: flex !important;
+  align-items: center !important;
+  gap: 14px !important;
+  margin-bottom: 28px !important;
+}
+
+.char-avatar {
+  width: 52px !important;
+  height: 52px !important;
+  border-radius: 50% !important;
+  background: linear-gradient(135deg, var(--amber), var(--magenta)) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 22px !important;
+  flex-shrink: 0 !important;
+  box-shadow: 0 4px 16px rgba(205,19,109,0.20) !important;
+}
+
+.char-avatar-info .char-name {
+  font-family: 'Playfair Display', serif !important;
+  font-size: 20px !important;
+  font-weight: 700 !important;
+  color: var(--charcoal) !important;
+  display: block !important;
+  line-height: 1.2 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+}
+
+.char-avatar-info .char-title {
+  font-family: 'Lora', serif !important;
+  font-size: 11px !important;
+  font-weight: 400 !important;
+  font-style: italic !important;
+  color: var(--muted) !important;
+  letter-spacing: 0.5px !important;
+  margin: 0 !important;
+}
+
+.char-onboard-h {
+  font-family: 'Playfair Display', serif !important;
+  font-size: 32px !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+  color: var(--charcoal) !important;
+  margin: 0 0 10px !important;
+  padding: 0 !important;
+  border: none !important;
+  background: none !important;
+  text-transform: none !important;
+  letter-spacing: normal !important;
+}
+
+.char-onboard-h em {
+  font-style: italic !important;
+  font-weight: 400 !important;
+  color: var(--amber) !important;
+}
+
+.char-onboard-sub {
+  font-family: 'Lora', serif !important;
+  font-size: 14px !important;
+  font-weight: 300 !important;
+  font-style: italic !important;
+  line-height: 1.8 !important;
+  color: var(--muted) !important;
+  margin: 0 0 32px !important;
+  padding: 0 !important;
+}
+
+.char-field-group { margin-bottom: 18px !important; }
+
+/* Member / Guest toggle */
+.char-member-toggle {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 10px !important;
+}
+.char-member-btn {
+  padding: 13px 14px !important;
+  border-radius: 10px !important;
+  border: 1.5px solid var(--sand) !important;
+  background: var(--white) !important;
+  font-family: inherit !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: var(--charcoal) !important;
+  cursor: pointer !important;
+  transition: all 0.18s !important;
+  text-align: center !important;
+}
+.char-member-btn:hover { border-color: var(--amber) !important; background: var(--cream) !important; }
+.char-member-btn.selected {
+  border-color: var(--amber) !important;
+  background: var(--amber) !important;
+  color: var(--white) !important;
+}
+
+.char-field-label {
+  display: block !important;
+  font-family: 'Lora', serif !important;
+  font-size: 10px !important;
+  font-weight: 500 !important;
+  letter-spacing: 2.5px !important;
+  text-transform: uppercase !important;
+  color: var(--muted) !important;
+  margin: 0 0 8px !important;
+  padding: 0 !important;
+}
+
+.char-select, .char-input {
+  width: 100% !important;
+  padding: 14px 16px !important;
+  border: 1.5px solid var(--sand) !important;
+  border-radius: 8px !important;
+  font-family: 'Lora', serif !important;
+  font-size: 14px !important;
+  font-weight: 300 !important;
+  color: var(--charcoal) !important;
+  background: var(--white) !important;
+  outline: none !important;
+  transition: border-color 0.2s !important;
+  -webkit-appearance: none !important;
+  box-shadow: none !important;
+  margin: 0 !important;
+  line-height: normal !important;
+}
+
+.char-select:focus, .char-input:focus {
+  border-color: var(--amber) !important;
+}
+
+.char-trinity-row {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 12px !important;
+  margin-bottom: 18px !important;
+}
+
+.char-trinity-field {
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.char-btn {
+  width: 100% !important;
+  padding: 16px 32px !important;
+  background: var(--amber) !important;
+  color: var(--white) !important;
+  border: none !important;
+  border-radius: 8px !important;
+  font-family: 'Lora', serif !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  letter-spacing: 2px !important;
+  text-transform: uppercase !important;
+  cursor: pointer !important;
+  transition: background 0.2s !important;
+  margin-top: 8px !important;
+  display: block !important;
+  text-align: center !important;
+  box-shadow: none !important;
+  line-height: normal !important;
+}
+
+.char-btn:hover { background: var(--amber-dk) !important; }
+
+/* ── CHAT WINDOW ── */
+.char-chat {
+  display: none !important;
+  background: var(--white) !important;
+  border-radius: 16px !important;
+  overflow: hidden !important;
+  box-shadow: 0 12px 56px rgba(159,94,35,0.10) !important;
+  border: 1px solid rgba(159,94,35,0.10) !important;
+  animation: charFade 0.4s ease !important;
+  flex-direction: column !important;
+  height: 620px !important;
+  margin: 0 !important;
+}
+
+.char-chat.active {
+  display: flex !important;
+}
+
+/* Chat header */
+.char-header {
+  background: linear-gradient(135deg, var(--amber), #C47820) !important;
+  padding: 18px 24px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  flex-shrink: 0 !important;
+}
+
+.char-header-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.char-header-info .char-header-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--white);
+  display: block;
+  line-height: 1.2;
+}
+
+.char-header-info .char-header-sub {
+  font-family: 'Lora', serif;
+  font-size: 11px;
+  font-style: italic;
+  color: rgba(255,255,255,0.75);
+}
+
+.char-header-glam {
+  margin-left: auto;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-family: 'Lora', serif;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  color: var(--white);
+  text-align: right;
+}
+
+/* Messages */
+.char-messages {
+  flex: 1 !important;
+  overflow-y: auto !important;
+  padding: 24px 20px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 16px !important;
+  background: var(--cream) !important;
+  scroll-behavior: smooth !important;
+}
+
+.char-messages::-webkit-scrollbar { width: 4px; }
+.char-messages::-webkit-scrollbar-track { background: transparent; }
+.char-messages::-webkit-scrollbar-thumb { background: var(--sand); border-radius: 2px; }
+
+/* Message bubbles */
+.char-msg {
+  display: flex;
+  gap: 10px;
+  animation: charMsgIn 0.3s ease;
+}
+
+.char-msg.user {
+  flex-direction: row-reverse;
+}
+
+.char-msg-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--amber), var(--magenta));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.char-msg.user .char-msg-avatar {
+  background: var(--sand);
+  font-size: 13px;
+}
+
+.char-bubble {
+  max-width: 78%;
+  padding: 14px 18px;
+  border-radius: 16px;
+  font-family: 'Lora', serif;
+  font-size: 13.5px;
+  font-weight: 300;
+  line-height: 1.75;
+  color: var(--charcoal);
+}
+
+.char-msg.char .char-bubble {
+  background: var(--white);
+  border: 1px solid rgba(159,94,35,0.08);
+  border-bottom-left-radius: 4px;
+  box-shadow: 0 2px 12px rgba(159,94,35,0.06);
+}
+
+.char-msg.user .char-bubble {
+  background: var(--amber);
+  color: var(--white);
+  border-bottom-right-radius: 4px;
+}
+
+.char-bubble strong {
+  font-weight: 500;
+}
+
+.char-bubble em {
+  font-style: italic;
+  color: var(--muted);
+}
+
+.char-msg.user .char-bubble em {
+  color: rgba(255,255,255,0.8);
+}
+
+/* Typing indicator */
+.char-typing {
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+}
+
+.char-typing-dots {
+  background: var(--white);
+  border: 1px solid rgba(159,94,35,0.08);
+  border-radius: 16px;
+  border-bottom-left-radius: 4px;
+  padding: 16px 20px;
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.char-typing-dots span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--sand);
+  animation: charDot 1.2s ease infinite;
+}
+
+.char-typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+.char-typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes charDot {
+  0%, 80%, 100% { transform: scale(1); opacity: 0.4; }
+  40% { transform: scale(1.2); opacity: 1; }
+}
+
+/* Input area */
+.char-input-area {
+  padding: 16px 20px !important;
+  background: var(--white) !important;
+  border-top: 1px solid var(--sand-lt) !important;
+  display: flex !important;
+  gap: 10px !important;
+  align-items: flex-end !important;
+  flex-shrink: 0 !important;
+}
+
+.char-text-input {
+  flex: 1 !important;
+  padding: 12px 16px !important;
+  border: 1.5px solid var(--sand) !important;
+  border-radius: 24px !important;
+  font-family: 'Lora', serif !important;
+  font-size: 14px !important;
+  font-weight: 300 !important;
+  color: var(--charcoal) !important;
+  background: var(--cream) !important;
+  outline: none !important;
+  resize: none !important;
+  transition: border-color 0.2s !important;
+  max-height: 120px !important;
+  line-height: 1.5 !important;
+  box-shadow: none !important;
+  margin: 0 !important;
+}
+
+.char-text-input:focus {
+  border-color: var(--amber) !important;
+  background: var(--white) !important;
+}
+
+.char-send-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--amber) !important;
+  border: none !important;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.2s, transform 0.1s;
+  box-shadow: none !important;
+}
+
+.char-send-btn:hover { background: var(--amber-dk) !important; }
+.char-send-btn:active { transform: scale(0.95); }
+.char-send-btn:disabled { background: var(--sand) !important; cursor: not-allowed; }
+
+.char-send-btn svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: white;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Event mode */
+.char-event-toggle {
+  margin-bottom: 18px !important;
+  padding: 14px 16px !important;
+  background: linear-gradient(135deg, rgba(205,19,109,0.06), rgba(159,94,35,0.06)) !important;
+  border: 1.5px solid rgba(205,19,109,0.20) !important;
+  border-radius: 10px !important;
+  display: none !important;
+}
+.char-event-toggle.visible { display: block !important; }
+.char-event-name {
+  font-family: 'Playfair Display', serif !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  color: var(--charcoal) !important;
+  display: block !important;
+  margin: 0 0 3px !important;
+}
+.char-event-detail {
+  font-family: 'Lora', serif !important;
+  font-size: 11px !important;
+  font-style: italic !important;
+  color: var(--muted) !important;
+  margin: 0 !important;
+  line-height: 1.6 !important;
+}
+
+/* Photo upload button */
+.char-upload-btn {
+  width: 44px !important;
+  height: 44px !important;
+  border-radius: 50% !important;
+  background: var(--sand-lt) !important;
+  border: 1.5px solid var(--sand) !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+  transition: background 0.2s !important;
+  box-shadow: none !important;
+}
+.char-upload-btn:hover { background: var(--sand) !important; }
+.char-upload-btn svg {
+  width: 18px !important;
+  height: 18px !important;
+  stroke: var(--amber) !important;
+  fill: none !important;
+  stroke-width: 2 !important;
+  stroke-linecap: round !important;
+  stroke-linejoin: round !important;
+}
+
+/* Image preview in chat */
+.char-img-preview {
+  max-width: 200px !important;
+  max-height: 200px !important;
+  border-radius: 10px !important;
+  object-fit: cover !important;
+  display: block !important;
+  margin-bottom: 8px !important;
+}
+
+/* AI disclosure notice — sits above the input row */
+.char-wrap .char-disclosure {
+  font-size: 11px !important;
+  color: #86837F !important;
+  line-height: 1.4 !important;
+  margin: 0 !important;
+  padding: 8px 20px 0 !important;
+  font-family: inherit !important;
+  background: var(--white) !important;
+}
+.char-wrap .char-disclosure a {
+  color: #86837F !important;
+  text-decoration: underline !important;
+}
+.char-wrap .char-disclosure a:hover {
+  color: #D6006D !important;
+}
+
+/* Upload preview strip above input */
+.char-upload-preview {
+  display: none !important;
+  padding: 10px 20px 0 !important;
+  background: var(--white) !important;
+}
+.char-upload-preview.active { display: flex !important; align-items: center !important; gap: 10px !important; }
+.char-upload-thumb {
+  width: 48px !important;
+  height: 48px !important;
+  border-radius: 8px !important;
+  object-fit: cover !important;
+  border: 1.5px solid var(--sand) !important;
+}
+.char-upload-remove {
+  background: none !important;
+  border: none !important;
+  cursor: pointer !important;
+  font-size: 16px !important;
+  color: var(--muted) !important;
+  padding: 0 !important;
+  line-height: 1 !important;
+}
+.char-upload-label {
+  font-family: 'Lora', serif !important;
+  font-size: 11px !important;
+  font-style: italic !important;
+  color: var(--muted) !important;
+}
+  text-align: center !important;
+  margin-top: 12px !important;
+  font-family: 'Lora', serif !important;
+  font-size: 11px !important;
+  font-style: italic !important;
+  color: var(--muted) !important;
+}
+
+@keyframes charFade {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes charMsgIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media(max-width: 520px) {
+  .char-onboard { padding: 36px 22px; }
+  .char-onboard-h { font-size: 26px !important; }
+  .char-trinity-row { grid-template-columns: 1fr; }
+  .char-chat { height: 520px; }
+  .char-bubble { max-width: 88%; }
+}
+</style>
+
+<div class="char-wrap">
+
+  <!-- ONBOARDING -->
+  <div class="char-onboard" id="char-onboard">
+    <div class="char-avatar-wrap">
+      <div class="char-avatar">💄</div>
+      <div class="char-avatar-info">
+        <span class="char-name">Char</span>
+        <span class="char-title">Your Beauty Best Friend · T8C</span>
+      </div>
+    </div>
+
+    <div class="char-onboard-h">Hey beauty bestie,<br><em>let's get you glam.</em></div>
+    <p class="char-onboard-sub">Tell me your style and I'll give you personalized guidance — products, routines, recommendations, all of it. Makeup wearer or skincare-first, Char knows both systems.</p>
+
+    <div class="char-field-group">
+      <span class="char-field-label">Are You... *</span>
+      <div class="char-member-toggle" style="grid-template-columns:1fr 1fr 1fr !important;">
+        <button type="button" class="char-member-btn" id="char-member-btn" onclick="charSetMemberStatus('member')">✦ Inner Circle Member</button>
+        <button type="button" class="char-member-btn" id="char-explore-btn" onclick="charSetMemberStatus('exploring')">✨ Just Exploring</button>
+        <button type="button" class="char-member-btn" id="char-guest-btn" onclick="charSetMemberStatus('event')">👋 At an Event</button>
+      </div>
+    </div>
+
+    <div class="char-field-group" style="display:none;" id="char-event-field-group">
+      <span class="char-field-label">Which Event?</span>
+      <select class="char-select" id="char-mode" onchange="charModeSwitch()">
+        <option value="standard">Select your event...</option>
+        <option value="suite888">Suite 888: The Founding Room</option>
+        <option value="modernhaus">ModernHaus: The Fall Edit Reset</option>
+        <option value="createcultivate">Create & Cultivate Festival</option>
+        <option value="meetcute">The Fall Edit: Meet Cute @ MAC</option>
+        <option value="beyondthecounter">Beyond the Counter (LA Tech Week)</option>
+        <option value="innovationedit">The Innovation Edit</option>
+      </select>
+    </div>
+
+    <div class="char-event-toggle" id="char-event-info" style="display:none;">
+      <span class="char-event-name">The Fall Edit: Structured</span>
+      <p class="char-event-detail">Hosted by Triple Eight Creative</p>
+    </div>
+
+    <div class="char-field-group">
+      <span class="char-field-label">☀ Your Sun — Core Glam Style *</span>
+      <select class="char-select" id="char-sun">
+        <option value="">Select your style</option>
+        <optgroup label="── Signature Glam (Makeup)">
+          <option value="The Statement Maker">The Statement Maker — Bold. Expressive. Intentional.</option>
+          <option value="The Soft Power">The Soft Power — Romantic. Radiant. Rooted.</option>
+          <option value="The High Gloss">The High Gloss — Hydrated. Lit. Effortless.</option>
+          <option value="The Wild Card">The Wild Card — Unexpected. Color-Forward. Electric.</option>
+          <option value="The Eternal Classic">The Eternal Classic — Crisp. Refined. Iconic.</option>
+        </optgroup>
+        <optgroup label="── The Skin Edit (Skincare & Grooming)">
+          <option value="The Clean Slate">The Clean Slate — Fresh. Clarified. Starting from good skin.</option>
+          <option value="The Glow Ritual">The Glow Ritual — Intentional. Luminous. Skincare as a lifestyle.</option>
+          <option value="The Sharp Detail">The Sharp Detail — Groomed. Precise. Intentionally put together.</option>
+          <option value="The Grounded">The Grounded — Authentic. Protective. Real-life proof.</option>
+        </optgroup>
+      </select>
+    </div>
+
+    <div class="char-trinity-row">
+      <div class="char-trinity-field">
+        <span class="char-field-label">☽ Moon Style</span>
+        <select class="char-select" id="char-moon">
+          <option value="">Select Moon style</option>
+          <option value="The Statement Maker">The Statement Maker</option>
+          <option value="The Soft Power">The Soft Power</option>
+          <option value="The High Gloss">The High Gloss</option>
+          <option value="The Wild Card">The Wild Card</option>
+          <option value="The Eternal Classic">The Eternal Classic</option>
+          <option value="The Clean Slate">The Clean Slate</option>
+          <option value="The Glow Ritual">The Glow Ritual</option>
+          <option value="The Sharp Detail">The Sharp Detail</option>
+          <option value="The Grounded">The Grounded</option>
+        </select>
+      </div>
+      <div class="char-trinity-field">
+        <span class="char-field-label">↑ Rising Style</span>
+        <select class="char-select" id="char-rising">
+          <option value="">Select Rising style</option>
+          <option value="The Statement Maker">The Statement Maker</option>
+          <option value="The Soft Power">The Soft Power</option>
+          <option value="The High Gloss">The High Gloss</option>
+          <option value="The Wild Card">The Wild Card</option>
+          <option value="The Eternal Classic">The Eternal Classic</option>
+          <option value="The Clean Slate">The Clean Slate</option>
+          <option value="The Glow Ritual">The Glow Ritual</option>
+          <option value="The Sharp Detail">The Sharp Detail</option>
+          <option value="The Grounded">The Grounded</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="char-field-group">
+      <span class="char-field-label">Your first name *</span>
+      <input class="char-input" type="text" id="char-name-input" placeholder="What should Char call you?">
+    </div>
+
+    <button class="char-btn" onclick="charStart()">Chat with Char →</button>
+  </div>
+
+  <!-- CHAT -->
+  <div class="char-chat" id="char-chat">
+    <div class="char-header">
+      <div class="char-header-avatar">💄</div>
+      <div class="char-header-info">
+        <span class="char-header-name">Char</span>
+        <span class="char-header-sub">Your beauty best friend · T8C</span>
+      </div>
+      <div class="char-header-glam" id="char-header-glam"></div>
+    </div>
+
+    <div class="char-messages" id="char-messages"></div>
+
+    <div class="char-upload-preview" id="char-upload-preview">
+      <img class="char-upload-thumb" id="char-upload-thumb" src="" alt="upload preview">
+      <span class="char-upload-label">Photo ready to send</span>
+      <button class="char-upload-remove" onclick="charRemovePhoto()">✕</button>
+    </div>
+
+    <div class="char-disclosure">
+      Char is AI, not a human — your messages are processed by our AI provider to generate responses. <a href="https://www.tripleeightcreative.com/privacypolicy" target="_blank" rel="noopener">Privacy policy</a>
+    </div>
+
+    <div class="char-input-area">
+      <!-- Hidden file input -->
+      <input
+        type="file"
+        id="char-file-input"
+        accept="image/*"
+        style="display:none !important;"
+        onchange="charHandlePhoto(this)"
+      >
+      <button class="char-upload-btn" onclick="document.getElementById('char-file-input').click()" title="Upload a photo">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+      </button>
+      <textarea
+        class="char-text-input"
+        id="char-input"
+        placeholder="Ask Char anything..."
+        rows="1"
+        onkeydown="charKeydown(event)"
+        oninput="charAutoResize(this)"
+      ></textarea>
+      <button class="char-send-btn" id="char-send" onclick="charSend()">
+        <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <button class="save-btn" id="char-save-btn" onclick="charSaveConvo()">↓ Save Conversation</button>
+    <div class="char-footer">Char is powered by AI · For personalized glam guidance only · Not medical advice</div>
+
+</div>
+
+<script>
+
+  // ── CONFIG ──────────────────────────────────────────────────────────
+  // Replace YOUR_API_KEY_HERE with your Anthropic API key (sk-ant-...)
+  // API key lives securely on Netlify — no key needed here
+  const MODEL   = 'claude-sonnet-4-6';
+
+  // ── STATE ────────────────────────────────────────────────────────────
+  let charUser    = { name:'', sun:'', moon:'', rising:'', isMember:null };
+
+  // ── MEMBER / GUEST TOGGLE ───────────────────────────────────────────────
+  // charModeSwitch — called when guest selects an event from the dropdown
+  // Mode value is read by buildSystemPrompt() when the session starts — nothing else needed here
+  function charModeSwitch() {};
+
+  function charSetMemberStatus(status) {
+    charUser.isMember = status;
+    document.getElementById('char-member-btn').classList.toggle('selected',  status === 'member');
+    document.getElementById('char-explore-btn').classList.toggle('selected', status === 'exploring');
+    document.getElementById('char-guest-btn').classList.toggle('selected',   status === 'event');
+    // Show event dropdown only for event guests
+    var eventGroup = document.getElementById('char-event-field-group');
+    if (eventGroup) eventGroup.style.display = (status === 'event') ? 'block' : 'none';
+    if (status !== 'event') document.getElementById('char-mode').value = 'standard';
+  };
+  let chatHistory = [];
+  let isTyping    = false;
+  let pendingPhoto = null; // { base64, mediaType } set when user uploads a photo
+
+  // ── SYSTEM PROMPT ────────────────────────────────────────────────────
+  function getEventPrompt(mode) {
+    const events = {
+      suite888: `## EVENT MODE — SUITE 888: THE FOUNDING ROOM
+
+You are inside Suite 888, Triple Eight Creative's private Fall Edit preview during NYFW.
+
+Guests are here to experience The Beauty Layer in real time — Signature Glam, Skin Style, product discovery, hospitality, AI, and the T8C ecosystem. They just took the Signature Glam Test and received their Beauty Trinity. Help them understand what it means and what to do with it as they move through the room.
+
+YOUR ROLE: Connect their Beauty Trinity to their Prep, Polish, and Signature recommendations. Make the experience feel personal, specific, and considered — not like a chatbot.
+
+SUGGESTED CHAR PROMPTS FOR THIS EVENT:
+1. What does my Beauty Trinity say about how I should build my Fall Edit?
+2. What should be in my Prep, Polish, and Signature beauty bag based on my result?
+
+THE FALL EDIT: STRUCTURED is the seasonal campaign. Style over trends. Build Your Signature. Beauty for the version of you that has places to be.`,
+
+      modernhaus: `## EVENT MODE — MODERNHAUS: THE FALL EDIT RESET
+
+You are at The Fall Edit Reset at ModernHaus Soho, featuring LunrLove.
+
+Guests may be arriving from a wellness class, a rooftop moment, or a hotel experience. They are here for a beauty reset — something that bridges wellness and polish, movement and intention. They took the Signature Glam Test and have their Beauty Trinity. Help them use it to transition into whatever comes next.
+
+YOUR ROLE: Translate their Beauty Trinity into a post-class beauty refresh, guest-ready polish, and products that help them move from wellness into plans.
+
+SUGGESTED CHAR PROMPTS FOR THIS EVENT:
+1. How should I refresh my skin, hair, or beauty look after class based on my Beauty Trinity?
+2. What should I keep in my bag for a wellness-to-plans reset?`,
+
+      createcultivate: `## EVENT MODE — CREATE & CULTIVATE FESTIVAL
+
+You are at Create & Cultivate with Triple Eight Creative.
+
+Guests are attending a founder, creator, and business festival. They may want beauty that works for photos, networking, panels, and long days on their feet. They took the Signature Glam Test and have their Beauty Trinity. Help them use it to stay polished and considered throughout the day.
+
+YOUR ROLE: Turn their Beauty Trinity into a festival-ready beauty plan — one that holds from morning panels to evening networking without needing a full reset.
+
+SUGGESTED CHAR PROMPTS FOR THIS EVENT:
+1. What is my festival beauty look based on my Beauty Trinity?
+2. What should I carry for quick touch-ups between panels, photos, and networking?`,
+
+      meetcute: `## EVENT MODE — THE FALL EDIT: MEET CUTE @ MAC
+
+You are at The Fall Edit: Meet Cute @ MAC, a client-facing beauty and connection event with LunrLove.
+
+This event is about Fall Edit glam, skin, connection, profile-ready beauty, and showing up online and IRL. Guests took the Signature Glam Test and have their Beauty Trinity. MAC products are available and relevant here — include MAC-specific recommendations where they fit the guest's Trinity.
+
+YOUR ROLE: Connect their Beauty Trinity to fall glam, skin prep, profile-ready beauty, and the way they want to be seen this season.
+
+SUGGESTED CHAR PROMPTS FOR THIS EVENT:
+1. What does my Beauty Trinity say about my date-night or profile-ready beauty look?
+2. Which MAC Fall Edit products should I explore for my Prep, Polish, and Signature?`,
+
+      beyondthecounter: `## EVENT MODE — BEYOND THE COUNTER (LA TECH WEEK)
+
+You are at Beyond the Counter during LA Tech Week — Cool Down Club: Courtside Edition.
+
+This event is about beauty, AI, hospitality, wellness, movement, culture, community, and discovery. Guests may be coming from a fitness moment, a tech conversation, or a courtside experience. They took the Signature Glam Test and have their Beauty Trinity. Help them use it to think about how beauty, wellness, and identity connect.
+
+YOUR ROLE: Explore how their Beauty Trinity connects to beauty, wellness, movement, hospitality, and how they prepare to show up in the next room.
+
+SUGGESTED CHAR PROMPTS FOR THIS EVENT:
+1. How does my Beauty Trinity translate into a courtside beauty, skin, or wellness reset?
+2. What does my result say about the kind of beauty guidance I actually need?`,
+
+      innovationedit: `## EVENT MODE — THE NEW BEAUTY COUNTER x TECH MEETS COUTURE / THE INNOVATION EDIT
+
+You are at The Innovation Edit, where The New Beauty Counter meets Tech Meets Couture — a founder marketplace, fashion, beauty, wellness, technology, and product discovery experience.
+
+Guests may be founders, vendors, creatives, investors, sponsors, or community members. They took the Signature Glam Test and have their Beauty Trinity. This space is about discovery, connection, and how beauty, fashion, wellness, and technology shape how people show up.
+
+YOUR ROLE: Help guests explore their Beauty Trinity, discover products and founders with more context, and think about how their beauty identity connects to who they are as builders and creatives.
+
+SUGGESTED CHAR PROMPTS FOR THIS EVENT:
+1. What does my Beauty Trinity say about how I show up as a founder, creative, or builder?
+2. What should I look for when discovering beauty, wellness, or fashion products at this event?`
+    };
+    return events[mode] || '';
+  }
+
+
+  function buildSystemPrompt() {
+    var mode        = document.getElementById('char-mode') ? document.getElementById('char-mode').value : 'standard';
+    var eventBlock  = (mode !== 'standard') ? getEventPrompt(mode) : '';
+    var userName    = charUser.name    || '';
+    var coreStyle   = charUser.sun     || 'not selected';
+    var moonStyle   = charUser.moon    || 'not selected';
+    var risingStyle = charUser.rising  || 'not selected';
+    var coreShort   = charUser.sun    ? charUser.sun.replace('The ','')    : 'Core';
+    var risingShort = charUser.rising ? charUser.rising.replace('The ','') : 'Rising';
+    var memberBlock;
+    if (charUser.isMember === 'member') {
+      memberBlock = userName + ' is an Inner Circle Paid Client. They have full access — no need to mention joining or pitch membership. Just give them the full Char experience.';
+    } else if (charUser.isMember === 'event') {
+      memberBlock = userName + ' is a GUEST at a live event. Give them the complete, warm Char experience with zero membership talk early on or mid-conversation. Only when the conversation is naturally winding down, close warmly and mention Inner Circle ONCE: "Want to keep using Char after today? Join Inner Circle Paid and this stays yours — seasonal beauty guidance, event access, and Char anytime you need it. Join here: https://buy.stripe.com/9B614oeviaCh7k4gEKgrS0d" Never repeat it if they keep chatting.';
+    } else {
+      memberBlock = userName + ' is Just Exploring — they found Char on their own. Give them the full, warm Char experience. Only when the conversation is naturally winding down, mention Inner Circle ONCE: "Want to keep using Char? Join Inner Circle Paid and it stays yours — seasonal beauty guidance, event access, and Char anytime. Join here: https://buy.stripe.com/9B614oeviaCh7k4gEKgrS0d" Never lead with it. Never repeat it.';
+    }
+
+    return '# CHAR — T8C AI Beauty Concierge\n' +
+      eventBlock + '\n' +
+      'You are Char, Triple Eight Creative\'s AI-supported beauty concierge, built on the experience of Charde Smith-Anglin — 20+ years in beauty, former MAC Cosmetics Pro Store flagship manager, founder of Joli Beauty Bar (WWD, Allure, German Vogue), and the developer of the Signature Glam system. Char turns beauty inspiration into a decision. Warm, direct, real, and culturally fluent.\n\n' +
+      '## THIS MEMBER\'S BEAUTY TRINITY\n' +
+      '- Name: ' + userName + '\n' +
+      '- Core: ' + coreStyle + '\n' +
+      '- Moon: ' + moonStyle + '\n' +
+      '- Rising: ' + risingStyle + '\n\n' +
+      'The Beauty Trinity is your foundation. Core = who they already are. Moon = what they secretly love but do not fully claim. Rising = what they are capable of and how others experience them. Use all three in every recommendation.\n\n' +
+      '## PREP / POLISH / SIGNATURE (The Beauty Layer)\n' +
+      'PREP: skin prep, hydration, SPF, hair prep, grooming, body care — getting ready before the moment begins.\n' +
+      'POLISH: lip, brow, liner, mascara, glow, shine control, hair finishing, skin finish — the details that make it land.\n' +
+      'SIGNATURE: the one memorable detail that makes the look feel like them — black cherry lip, espresso liner, champagne glow, scent, soft smoke, polished hair detail.\n\n' +
+      '## HOW TO USE THE BEAUTY TRINITY\n' +
+      'Core layer: "For your ' + coreShort + ' identity, you want..."\n' +
+      'Moon layer: "Your Moon means you can also pull in..."\n' +
+      'Rising layer: "If you want to go full ' + risingShort + ' energy, here is where it gets interesting..."\n\n' +
+      'Push them toward their Rising gently when they are playing safe. Say: "I see you. But your Rising is asking for something and it is closer than you think." Make them feel safe. Never shame. Always show them where they can go.\n\n' +
+      '## THE FALL EDIT: STRUCTURED\n' +
+      '"Style over trends. Build Your Signature. Beauty for the version of you that has places to be."\n' +
+      'Prep / Polish / Signature is the framework for every recommendation.\n\n' +
+      'Fall by Core style:\n' +
+      'Statement Maker: Espresso liner. Black cherry lip. Graphic liner that holds. Deeper, richer, more saturated.\n' +
+      'Soft Power: Fig and plum tones. Tinted stain. Satin skin. Warmer and more romantic.\n' +
+      'High Gloss: Barrier skin. Intentional highlight. Base that disappears. Refined and luminous.\n' +
+      'Wild Card: One rich or unusual detail. Everything else stripped clean. Unexpected and considered.\n' +
+      'Eternal Classic: Same crisp structure. Richer color story. Burgundy. Deep red. Polished depth.\n\n' +
+      'After Hours: how any Core style gets turned up for evening — same Trinity, just louder.\n\n' +
+      '## PRODUCT RECOMMENDATIONS\n' +
+      'Category first always. 2-3 options max. One sentence of why per option. Recommend from the T8C brand universe below — these are the brands Charde knows, trusts, and recommends. Do not default to generic pharmacy brands (CeraVe, Neutrogena, Cetaphil etc.) — there are better-positioned options in this list for every need.\n\n' +
+      'T8C BRAND UNIVERSE — recommend from these:\n' +
+      'MAC — pro-quality, reliable, excellent shade diversity. Go-to for liner, foundation, Fix+, lipstick. Classic and editorial in equal measure.\n' +
+      'Fenty Beauty — widest shade range available. Pro Filt\'r for full coverage, Eaze Drop for skin-first looks, Gloss Bomb for universal gloss, Match Stix for portability.\n' +
+      'NARS — editorial quality and pigment. Orgasm blush/gloss for Soft Power. Radiant Creamy Concealer is a staple. Soft Matte Complete Foundation for structure.\n' +
+      'Pat McGrath Labs — ultra-luxury pigment and finish. MatteTrance for Statement Maker lips. Skin Fetish for High Gloss. Eye pigments for Wild Card moments.\n' +
+      'Danessa Myricks — color-forward, versatile, multipurpose. Yummy Skin Blurring Balm Powder for High Gloss. Vision Flush for Wild Card blush. Infinite Chrome Flakes for After Hours.\n' +
+      'Haus Labs by Lady Gaga — innovative, wearable formulas. Triclone Skin Tech Foundation for High Gloss. Optic Intensity Mascara. Metallic Eye Foil for After Hours.\n' +
+      'Dior Beauty — luxury finish and longevity. Lip Glow Oil for Soft Power. Backstage Face & Body for events. Forever Foundation for polished, lasting base.\n' +
+      'Kosas — clean beauty that performs. Tinted Face Oil for High Gloss. Revealer Concealer. Color & Light Blush for Soft Power warmth.\n' +
+      'Westman Atelier — luxury clean, skin-first. Vital Skin Foundation Stick for travel and events. Face Trace Contour Stick. Glow Highlighter for intentional radiance.\n' +
+      'Clinique — dermatologist-tested, hypoallergenic, reliable. Almost Lipstick in Black Honey for Soft Power and Eternal Classic. Dramatically Different Moisturizing Gel. Chubby Stick for effortless polish.\n' +
+      'MUTHA — clean luxury body and skin. Body Butter for skin prep before events. SPF formulas. Neck and decollete care.\n' +
+      'EADEM — founded by Black and Brown women, formulated for melanin-rich skin. Cloud Cushion for seamless coverage. Milk Marvel Dark Spot Serum. Prioritize for guests with deeper skin tones.\n' +
+      'Kiehl\'s — dermatologist-backed skincare. Ultra Facial Cream for barrier support. Clearly Corrective for brightening. Midnight Recovery Concentrate for Glow Ritual.\n\n' +
+      'For Skin Style track: lead with Kiehl\'s, MUTHA, EADEM, Kosas, Westman Atelier, and Clinique before reaching for anything else.\n' +
+      'For color recommendations: MAC, Fenty, NARS, Pat McGrath, Danessa Myricks, Haus Labs.\n' +
+      'Black-owned and founded brands to prioritize when relevant: Fenty Beauty, Pat McGrath Labs, EADEM, Danessa Myricks.\n\n' +
+      'Shop The Fall Edit curated picks: https://shopmy.us/chardesmithbeauty/shop-the-fall-edit:-structured\n' +
+      'First time sharing this link in a conversation: "heads up — these are my curated picks and T8C earns a small commission if you shop through them, just keeping it transparent." Say it once per conversation.\n\n' +
+      '## FALL EDIT RESOURCES\n' +
+      'Fall Edit booking: https://app.acuityscheduling.com/schedule.php?owner=30467723&appointmentType=category:The%20Fall%20Edit\n' +
+      'The September Issue GlamaZine: https://www.tripleeightcreative.com/seasonal-guides/p/theseptemberissue\n' +
+      'Full service menu: https://www.tripleeightcreative.com\n\n' +
+      'When they are ready to go beyond digital — mention booking as the natural next step, not a sell.\n\n' +
+      '## BEAUTY RECEIPT\n' +
+      'When Prep, Polish, and Signature recommendations are complete: "Before you move on — save this conversation. Your recommendations are your Fall Edit Beauty Receipt. Screenshot it or use the Save button below."\n\n' +
+      '## INNER CIRCLE\n' +
+      memberBlock + '\n\n' +
+      '## SKIN EDIT TRACK\n' +
+      'When Core is Clean Slate, Glow Ritual, Sharp Detail, or Grounded — Skin Style path. Skincare-first, grooming-forward, no makeup unless they ask. Gender-neutral language always. Ask pronouns within first 2 exchanges.\n\n' +
+      'Clean Slate: building from zero. Simple 3-step routine. Never overwhelm.\n' +
+      'Glow Ritual: has a ritual, wants to deepen it. Talk actives and layering.\n' +
+      'Sharp Detail: has products but no system. Give them precision.\n' +
+      'Grounded: efficacy over aesthetics. Barrier repair, SPF, long-term results.\n\n' +
+      'Skin Prep / Polish / Signature: cleanser-barrier-SPF | skin tint-brow gel-detail | the one ritual that feels like theirs.\n\n' +
+      '## PHOTO ANALYSIS\n' +
+      'Read through their Beauty Trinity. Selfies: name what is working for Core, give 1-2 adjustments, connect to Moon and Rising, frame as upgrade. Inspo: name the archetype, translate to their Core, give the T8C version. Products: yes / maybe with conditions / no — if no, name a better alternative.\n\n' +
+      '## VOICE\n' +
+      'Open with: "hey ' + userName + '! 💄"\n' +
+      'Sign off longer responses with: "Luv, Char"\n' +
+      'Warm. Direct. Real. Conversational. Line breaks over paragraphs. Never bullet points. Never more than 3 products at once. No medical advice.';
+  }
+
+
+  function charStart() {
+    var sun    = document.getElementById('char-sun').value;
+    var moon   = document.getElementById('char-moon').value;
+    var rising = document.getElementById('char-rising').value;
+    var name   = document.getElementById('char-name-input').value.trim();
+
+    if (!sun)  { alert("Please select your Signature Glam style."); return; }
+    if (!name) { alert("Please enter your first name."); return; }
+    if (charUser.isMember === null) { alert("Quick one — pick the option that fits you best."); return; }
+    if (charUser.isMember === 'event') {
+      var selectedMode = document.getElementById('char-mode').value;
+      if (!selectedMode || selectedMode === 'standard') { alert("Please select which event you're at."); return; }
+    }
+
+    charUser = { name: name, sun: sun, moon: moon, rising: rising, isMember: charUser.isMember };
+
+    document.getElementById('char-header-glam').innerHTML =
+      '✦ ' + sun.replace('The ','') +
+      (moon   ? '<br>☽ ' + moon.replace('The ','')   : '') +
+      (rising ? '<br>↑ ' + rising.replace('The ','') : '');
+
+    document.getElementById('char-onboard').style.display = 'none';
+    document.getElementById('char-chat').classList.add('active');
+    document.querySelector('.char-wrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    charInitialMessage();
+  }
+
+  function charInitialMessage() {
+    showTyping();
+    const opening = [{
+      role: 'user',
+      content: `Hi Char! I'm ${charUser.name}. My Sun is ${charUser.sun}${charUser.moon ? ', my Moon is ' + charUser.moon : ''}${charUser.rising ? ', and my Rising is ' + charUser.rising : ''}. Can you welcome me and tell me a little about my glam profile?`
+    }];
+    callAPI(opening, true);
+  }
+
+  // ── PHOTO UPLOAD ─────────────────────────────────────────────────────
+  function charHandlePhoto(input) {
+    const file = input.files[0];
+    if (!file) return;
+
+    // Compress image before sending to keep payload small
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = function() {
+      const canvas = document.createElement('canvas');
+      const MAX = 800;
+      let w = img.width, h = img.height;
+      if (w > h && w > MAX) { h = Math.round(h * MAX / w); w = MAX; }
+      else if (h > MAX) { w = Math.round(w * MAX / h); h = MAX; }
+      canvas.width = w;
+      canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      const dataUrl  = canvas.toDataURL('image/jpeg', 0.75);
+      const base64   = dataUrl.split(',')[1];
+      URL.revokeObjectURL(url);
+
+      pendingPhoto = { base64, mediaType: 'image/jpeg' };
+      document.getElementById('char-upload-thumb').src = dataUrl;
+      document.getElementById('char-upload-preview').classList.add('active');
+      document.getElementById('char-input').placeholder = 'Add a message or just hit send...';
+    };
+    img.src = url;
+    input.value = '';
+  };
+
+  function charRemovePhoto() {
+    pendingPhoto = null;
+    document.getElementById('char-upload-preview').classList.remove('active');
+    document.getElementById('char-upload-thumb').src = '';
+    document.getElementById('char-input').placeholder = 'Ask Char anything...';
+  };
+
+  // ── SEND ─────────────────────────────────────────────────────────────
+  function charSend() {
+    const input = document.getElementById('char-input');
+    const text  = input.value.trim();
+    if (!text && !pendingPhoto || isTyping) return;
+
+    input.value = '';
+    input.style.height = 'auto';
+
+    // Build user message content
+    let userContent;
+    if (pendingPhoto) {
+      // Multi-part message with image
+      userContent = [
+        {
+          type: 'image',
+          source: {
+            type:       'base64',
+            media_type: pendingPhoto.mediaType,
+            data:       pendingPhoto.base64
+          }
+        }
+      ];
+      if (text) {
+        userContent.push({ type: 'text', text });
+      } else {
+        userContent.push({ type: 'text', text: 'Please analyze this photo and give me personalized feedback based on my Signature Glam style.' });
+      }
+
+      // Show image + text in chat
+      addImageMessage(document.getElementById('char-upload-thumb').src, text);
+
+      // Store in history as array content
+      chatHistory.push({ role: 'user', content: userContent });
+
+      // Clear photo
+      charRemovePhoto();
+
+    } else {
+      userContent = text;
+      addMessage('user', text);
+      chatHistory.push({ role: 'user', content: text });
+    }
+
+    showTyping();
+    callAPI(chatHistory, false);
+  };
+
+  function charKeydown(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      charSend();
+    }
+  };
+
+  function charAutoResize(el) {
+    el.style.height = 'auto';
+    el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+  };
+
+  // ── PERSISTENT MEMBER ID (for usage tracking only — no onboarding/UI change) ──
+  function getCharMemberId() {
+    var KEY = 't8c_char_member_id';
+    try {
+      var id = localStorage.getItem(KEY);
+      if (!id) {
+        id = 'char_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 10);
+        localStorage.setItem(KEY, id);
+      }
+      return id;
+    } catch (e) {
+      // localStorage unavailable (private browsing etc) — fall back to a per-session id
+      if (!window._charFallbackId) {
+        window._charFallbackId = 'char_session_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 10);
+      }
+      return window._charFallbackId;
+    }
+  }
+
+  // ── API CALL ─────────────────────────────────────────────────────────
+  function callAPI(messages, isOpening) {
+    document.getElementById('char-send').disabled = true;
+    isTyping = true;
+
+    fetch('https://t8c-char.netlify.app/.netlify/functions/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model:        MODEL,
+        max_tokens:   800,
+        system:       buildSystemPrompt(),
+        messages:     messages,
+        charMemberId: getCharMemberId()
+      })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      hideTyping();
+      isTyping = false;
+      document.getElementById('char-send').disabled = false;
+
+      if (data.content && data.content[0]) {
+        var reply = data.content[0].text;
+        addMessage('char', reply);
+        if (!isOpening) {
+          chatHistory.push({ role: 'assistant', content: reply });
+        } else {
+          chatHistory = [
+            { role: 'user',      content: messages[0].content },
+            { role: 'assistant', content: reply }
+          ];
+        }
+      } else {
+        addMessage('char', "hey beauty — something glitched on my end. Try again in a sec! Luv, Char 💄");
+      }
+    })
+    .catch(function() {
+      hideTyping();
+      isTyping = false;
+      document.getElementById('char-send').disabled = false;
+      addMessage('char', "hey beauty — something glitched on my end. Try again in a sec! Luv, Char 💄");
+    });
+  }
+
+  // ── UI HELPERS ───────────────────────────────────────────────────────
+  function addImageMessage(imgSrc, caption) {
+    const msgs = document.getElementById('char-messages');
+    const msg  = document.createElement('div');
+    msg.className = 'char-msg user';
+
+    const avatar = document.createElement('div');
+    avatar.className = 'char-msg-avatar';
+    avatar.textContent = '✨';
+
+    const bubble = document.createElement('div');
+    bubble.className = 'char-bubble';
+
+    const img = document.createElement('img');
+    img.src = imgSrc;
+    img.className = 'char-img-preview';
+    bubble.appendChild(img);
+
+    if (caption) {
+      const p = document.createElement('p');
+      p.textContent = caption;
+      p.style.margin = '0';
+      bubble.appendChild(p);
+    }
+
+    msg.appendChild(avatar);
+    msg.appendChild(bubble);
+    msgs.appendChild(msg);
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  function addMessage(role, text) {
+    const msgs = document.getElementById('char-messages');
+
+    const msg = document.createElement('div');
+    msg.className = `char-msg ${role}`;
+
+    const avatar = document.createElement('div');
+    avatar.className = 'char-msg-avatar';
+    avatar.textContent = role === 'char' ? '💄' : '✨';
+
+    const bubble = document.createElement('div');
+    bubble.className = 'char-bubble';
+    bubble.innerHTML = formatText(text);
+
+    msg.appendChild(avatar);
+    msg.appendChild(bubble);
+    msgs.appendChild(msg);
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  function formatText(text) {
+    // Convert URLs to clickable links before other formatting
+    var linked = text.replace(/(https?:\/\/[^\s<>"')\]]+)/g, '<a href="$1" target="_blank" rel="noopener" style="color:var(--amber);text-decoration:underline;word-break:break-all;">$1</a>');
+    return linked
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.*?)\*/g, '<em>$1</em>')
+      .replace(/\n\n/g, '</p><p>')
+      .replace(/\n/g, '<br>')
+      .replace(/^/, '<p>')
+      .replace(/$/, '</p>');
+  }
+
+  function showTyping() {
+    const msgs = document.getElementById('char-messages');
+    const t = document.createElement('div');
+    t.className = 'char-typing';
+    t.id = 'char-typing';
+    t.innerHTML = `
+      <div class="char-msg-avatar" style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#9F5E23,#CD136D);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">💄</div>
+      <div class="char-typing-dots">
+        <span></span><span></span><span></span>
+      </div>`;
+    msgs.appendChild(t);
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  function hideTyping() {
+    const t = document.getElementById('char-typing');
+    if (t) t.remove();
+  }
+
+
+  // ── SAVE CONVERSATION ─────────────────────────────────────────
+  function charSaveConvo() {
+    // Build plain text transcript
+    var msgs = document.querySelectorAll('.char-wrap .char-msg');
+    var lines = ['Your Char Session — Triple Eight Creative', '='.repeat(40), ''];
+    msgs.forEach(function(m) {
+      var isUser = m.classList.contains('user');
+      var bubble = m.querySelector('.char-bubble');
+      if (!bubble) return;
+      lines.push(isUser ? 'You:' : 'Char:');
+      lines.push(bubble.innerText.trim());
+      lines.push('');
+    });
+    lines.push('='.repeat(40));
+    lines.push('tripleeightcreative.com');
+    var text = lines.join('\n');
+
+    // Try Web Share API first (mobile native share sheet)
+    if (navigator.share) {
+      navigator.share({
+        title: 'My Char Session — Triple Eight Creative',
+        text: text
+      }).catch(function() {});
+    } else {
+      // Desktop fallback — copy to clipboard
+      navigator.clipboard.writeText(text).then(function() {
+        var btn = document.getElementById('char-save-btn');
+        var orig = btn.textContent;
+        btn.textContent = '✓ Copied to clipboard';
+        setTimeout(function() { btn.textContent = orig; }, 2500);
+      }).catch(function() {
+        // Last resort — open in new tab
+        var win = window.open('', '_blank');
+        win.document.write('<pre style="font-family:Georgia,serif;padding:20px;max-width:680px;margin:0 auto;">' + text.replace(/</g,'&lt;') + '</pre>');
+        win.document.close();
+      });
+    }
+  };
+
+  // Show save button after first Char response by observing the messages div
+  var _msgContainer = document.getElementById('char-messages');
+  if (_msgContainer) {
+    var _obs = new MutationObserver(function() {
+      var hasChar = document.querySelector('.char-wrap .char-msg.char');
+      var btn = document.getElementById('char-save-btn');
+      if (hasChar && btn) btn.classList.add('visible');
+    });
+    _obs.observe(_msgContainer, { childList: true });
+  }
+
+
+</script>
