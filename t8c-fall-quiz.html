@@ -133,6 +133,39 @@
   margin-top:16px !important;
 }
 .t8c-quiz .save-results-btn:hover { background:var(--cream) !important; }
+.t8c-quiz .event-toggle-wrap { margin-top: 22px !important; }
+.t8c-quiz .event-toggle-grid { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 10px !important; }
+.t8c-quiz .event-toggle-btn {
+  padding: 13px 14px !important;
+  border-radius: 10px !important;
+  border: 1.5px solid var(--sand) !important;
+  background: var(--white) !important;
+  font-family: inherit !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: var(--charcoal) !important;
+  cursor: pointer !important;
+  transition: all 0.18s !important;
+  text-align: center !important;
+}
+.t8c-quiz .event-toggle-btn:hover { border-color: var(--amber) !important; background: var(--cream) !important; }
+.t8c-quiz .event-toggle-btn.selected { border-color: var(--amber) !important; background: var(--amber) !important; color: var(--white) !important; }
+.t8c-quiz .event-select-wrap { margin-top: 12px !important; display: none !important; }
+.t8c-quiz .event-select-wrap.visible { display: block !important; }
+.t8c-quiz .event-select {
+  width: 100% !important;
+  padding: 13px 16px !important;
+  border: 1.5px solid var(--sand) !important;
+  border-radius: 8px !important;
+  font-family: 'Lora', serif !important;
+  font-size: 13px !important;
+  color: var(--charcoal) !important;
+  background: var(--white) !important;
+  outline: none !important;
+  cursor: pointer !important;
+  -webkit-appearance: none !important;
+}
+.t8c-quiz .event-select:focus { border-color: var(--amber) !important; }
 @media(max-width:520px){
   .t8c-quiz .card{padding:34px 20px !important;}
   .t8c-quiz .quiz-h1{font-size:30px !important;}
@@ -150,6 +183,22 @@
       <span class="brand-label">Triple Eight Creative</span>
       <div class="quiz-h1">Find Your<br><em>Beauty Trinity.</em></div>
       <p class="sub">Take the Signature Glam Test. Discover your Core, Moon, and Rising — then build your Fall Edit around them.</p>
+
+      <div class="event-toggle-wrap">
+        <span class="quiz-label">Are you... *</span>
+        <div class="event-toggle-grid">
+          <button type="button" class="event-toggle-btn" id="evt-try-btn" onclick="setEventMode('trying')">✨ Just Trying</button>
+          <button type="button" class="event-toggle-btn" id="evt-event-btn" onclick="setEventMode('event')">👋 At an Event</button>
+        </div>
+        <div class="event-select-wrap" id="evt-select-wrap">
+          <select class="event-select" id="evt-select" onchange="setEventName()">
+            <option value="">Select your event...</option>
+            <option value="Create &amp; Cultivate Festival">Create &amp; Cultivate Festival</option>
+            <option value="The Daughter Edit">The Daughter Edit</option>
+            <option value="The Fall Edit: Meet Cute @ MAC">The Fall Edit: Meet Cute @ MAC</option>
+          </select>
+        </div>
+      </div>
       <div class="track-grid">
         <div class="track-card" id="track-makeup" onclick="selectTrack('makeup')">
           <span class="track-icon">💄</span>
@@ -258,7 +307,7 @@
       <div class="ic-box">
         <span class="ic-label">✦ Your Fall Edit Continues</span>
         <div class="ic-title">Welcome to Inner Circle.</div>
-        <p class="ic-desc">You've found your Beauty Trinity. Your Fall Edit continues inside Inner Circle — deeper recommendations, Char prompts, seasonal product notes, event access, and beauty guidance based on your result.</p>
+        <p class="ic-desc">You've found your Beauty Trinity. Your Fall Edit continues inside Inner Circle — deeper recommendations, Char prompts, seasonal product notes, event access, and beauty guidance based on your result. Take your Beauty Trinity into Char for a more personalized Fall Edit overview — save your results and share them when you start your Char session.</p>
         <p class="ic-free">✓ You're now part of Inner Circle Free. Your Beauty Trinity and Fall Edit access are confirmed.</p>
         <a class="ic-upgrade-link" href="https://buy.stripe.com/9B614oeviaCh7k4gEKgrS0d" target="_blank">Upgrade for deeper guidance, event access + Char anytime →</a>
       </div>
@@ -319,7 +368,7 @@
       <div class="ic-box">
         <span class="ic-label">✦ Your Fall Edit Continues</span>
         <div class="ic-title">Welcome to Inner Circle.</div>
-        <p class="ic-desc">You've found your Skin Style. Your Fall Edit continues inside Inner Circle — deeper recommendations, Char prompts, seasonal product notes, event access, and guidance based on your result.</p>
+        <p class="ic-desc">You've found your Skin Style. Your Fall Edit continues inside Inner Circle — deeper recommendations, Char prompts, seasonal product notes, event access, and guidance based on your result. Take your Skin Style into Char for a more personalized Fall Edit overview — save your results and share them when you start your Char session.</p>
         <p class="ic-free">✓ You're now part of Inner Circle Free. Your Skin Style and Fall Edit access are confirmed.</p>
         <a class="ic-upgrade-link" href="https://buy.stripe.com/9B614oeviaCh7k4gEKgrS0d" target="_blank">Upgrade for deeper guidance, event access + Char anytime →</a>
       </div>
@@ -330,7 +379,7 @@
       </div>
       <div class="btn-row">
         <a class="btn btn-primary" href="https://app.acuityscheduling.com/schedule.php?owner=30467723&appointmentType=category:The%20Fall%20Edit" target="_blank">Book a Service</a>
-        <a class="btn btn-outline" href="https://pin.it/3FIBZXcDV" target="_blank">View Style Board</a>
+        <a class="btn btn-outline" href="https://www.pinterest.com/studiotripleeight/signature-glam-styles/" target="_blank">View Style Board</a>
       </div>
       <div class="email-notice" id="t8c-notice-skin"></div>
       <button class="save-results-btn" onclick="t8cSaveResults('skin')">↓ Save My Skin Style</button>
@@ -427,11 +476,11 @@
   ];
 
   const MAKEUP_RESULTS={
-    statement:{name:"The Statement Maker",tagline:"Bold. Saturated. Structured.",desc:"Fall gives your Statement Maker identity something it's been waiting for: permission to go richer. Deep berry, espresso, burgundy, and graphic liner that holds all day. The structure was already there — this season the color gets more intentional and the look gets more considered.",fallEnergy:"Rich, saturated, and on purpose. Your Fall Edit is built on one bold feature that leads every look — deeper lip, sharper liner, one saturated detail that tells the room everything it needs to know.",prep:"A skin-first base that lets the feature lead. Barrier mist, lightweight coverage, nothing that competes with the color.",polish:"Graphic liner or a deep saturated lip — one at a time. Everything else stays clean and deliberate.",signature:"Black cherry lip. Espresso liner. One rich, intentional detail that makes the room remember you.",afterhours:"Deepen the lip to black cherry or oxblood, sharpen the liner edge, one more coat of mascara. Same statement — more atmosphere.",borrow:"Swap one neutral for something deeper — a berry liner, a burgundy blush, a rich lip. Keep the structure clean so the feature lands.",pinterest:"https://pin.it/1fOIvOm2g"},
-    softpower:{name:"The Soft Power",tagline:"Warm. Romantic. Considered.",desc:"Soft Power in fall is what happens when your care starts to show. The warmth shifts — peach and coral give way to fig, plum, and amber. Everything softens and deepens at the same time. Your look reads intimate, layered, and effortlessly considered.",fallEnergy:"Warm, layered, and romantic. Your Fall Edit is built on satin skin, warmer tones, and a gloss or stain that looks like you were born wearing it.",prep:"A hydrating base that shows your skin's texture. Glow serum under a skin tint — nothing that flattens the warmth.",polish:"Cream blush in fig or warm rose. A tinted gloss or lip stain in a deeper, more autumnal tone.",signature:"Champagne glow at the inner corner. A fig or plum lip. The romantic detail that makes people ask what you're wearing.",afterhours:"Deepen the lip to a plum or berry stain, sweep blush higher, add one warm bronze detail. Still soft — just more intentional under low light.",borrow:"Deepen your usual blush to a warmer, richer tone and try a lip stain where you'd usually wear gloss. Fall gives Soft Power more dimension.",pinterest:"https://pin.it/1fOIvOm2g"},
-    highgloss:{name:"The High Gloss",tagline:"Luminous. Skin-First. Intentional.",desc:"Fall High Gloss is not less — it's more refined. Your prep does the work. Barrier skin, strategic glow, a base that disappears and lets your actual skin lead. This season your luminosity reads intentional because you know exactly what you did to get there.",fallEnergy:"Refined and luminous. Your Fall Edit is built on prep — barrier skin, intentional highlight, a base that looks like good skin, not good coverage.",prep:"Barrier serum, SPF, a skin tint or nothing. Your prep is the whole look — protect what you built all year.",polish:"Strategic highlight at cheekbones only. A translucent lip gloss or balm. Nothing that reads heavy or competes.",signature:"Champagne glow placed with intention. The skin detail that makes people think you just came back from somewhere good.",afterhours:"Add a deeper bronzer for dimension and a glossy lip with just enough shimmer to catch the light. The glow stays the same — it just reads differently in low light.",borrow:"Let your skin be the statement. Lightweight base, one precise highlight. Add one bold blush pop swept to the temples — your prep earns the attention.",pinterest:"https://pin.it/R7JJ3GAip"},
-    wildcard:{name:"The Wild Card",tagline:"Unexpected. Textured. Singular.",desc:"Fall is your season for intention, not just experimentation. This is where you step into something richer — unexpected liner placement, a textured detail, a color that surprises in a considered way. One bold accent. Everything else clean and deliberate.",fallEnergy:"Singular and considered. Your Fall Edit is built on one unexpected detail — a surprising liner placement, a deep or unusual color, or a texture nobody else in the room is wearing.",prep:"A clean, neutral base that lets the detail lead. Nothing competing with your one intentional choice.",polish:"One unexpected element — a smoked lower lash line, a graphic inner corner, an unusual shadow placement. Everywhere else: clean.",signature:"Soft smoke in an unexpected color. A liner detail that surprises. One textured, considered choice that makes the look memorable.",afterhours:"Make the detail richer — same color, more depth and dimension under low light. The accent gets more intentional, not louder.",borrow:"Choose one unexpected detail — a deep or unusual liner, an unconventional placement — and keep everything else stripped. One move. Maximum impact.",pinterest:"https://pin.it/1fOIvOm2g"},
-    classic:{name:"The Eternal Classic",tagline:"Crisp. Refined. Seasonally Rich.",desc:"Fall gives the Eternal Classic a richer color story without touching the structure. Same crisp liner. Same polished discipline. The lip upgrades — burgundy, deep red, true plum — and the palette deepens. Classic in its truest form: the structure is so good, the color gets to be the whole update.",fallEnergy:"Structured and rich. Your Fall Edit is built on crisp liner, a deeper or bolder lip, and a polished base that holds through every moment.",prep:"A polished, controlled base. Pore-minimizing primer, a foundation that photographs clean, nothing that shifts.",polish:"Crisp liner — sharp wing or tight-line. Lifted, refined blush. The polish that makes everything else land.",signature:"A burgundy or deep red lip on a clean, structured base. The classic detail that doesn't need updating — just a seasonal color shift.",afterhours:"Deepen the lip to an oxblood or true burgundy, sharpen the liner one notch. Same precision. More atmosphere.",borrow:"Keep the crisp liner and structure you trust — just give the lip a fall upgrade. Same discipline, same precision. Totally new depth.",pinterest:"https://pin.it/6wtEVd5rC"}
+    statement:{name:"The Statement Maker",tagline:"Bold. Saturated. Structured.",desc:"Fall gives your Statement Maker identity something it's been waiting for: permission to go richer. Deep berry, espresso, burgundy, and graphic liner that holds all day. The structure was already there — this season the color gets more intentional and the look gets more considered.",fallEnergy:"Rich, saturated, and on purpose. Your Fall Edit is built on one bold feature that leads every look — deeper lip, sharper liner, one saturated detail that tells the room everything it needs to know.",prep:"A skin-first base that lets the feature lead. Barrier mist, lightweight coverage, nothing that competes with the color.",polish:"Graphic liner or a deep saturated lip — one at a time. Everything else stays clean and deliberate.",signature:"Black cherry lip. Espresso liner. One rich, intentional detail that makes the room remember you.",afterhours:"Deepen the lip to black cherry or oxblood, sharpen the liner edge, one more coat of mascara. Same statement — more atmosphere.",borrow:"Swap one neutral for something deeper — a berry liner, a burgundy blush, a rich lip. Keep the structure clean so the feature lands.",pinterest:"https://www.pinterest.com/studiotripleeight/signature-glam-styles/"},
+    softpower:{name:"The Soft Power",tagline:"Warm. Romantic. Considered.",desc:"Soft Power in fall is what happens when your care starts to show. The warmth shifts — peach and coral give way to fig, plum, and amber. Everything softens and deepens at the same time. Your look reads intimate, layered, and effortlessly considered.",fallEnergy:"Warm, layered, and romantic. Your Fall Edit is built on satin skin, warmer tones, and a gloss or stain that looks like you were born wearing it.",prep:"A hydrating base that shows your skin's texture. Glow serum under a skin tint — nothing that flattens the warmth.",polish:"Cream blush in fig or warm rose. A tinted gloss or lip stain in a deeper, more autumnal tone.",signature:"Champagne glow at the inner corner. A fig or plum lip. The romantic detail that makes people ask what you're wearing.",afterhours:"Deepen the lip to a plum or berry stain, sweep blush higher, add one warm bronze detail. Still soft — just more intentional under low light.",borrow:"Deepen your usual blush to a warmer, richer tone and try a lip stain where you'd usually wear gloss. Fall gives Soft Power more dimension.",pinterest:"https://www.pinterest.com/studiotripleeight/signature-glam-styles/"},
+    highgloss:{name:"The High Gloss",tagline:"Luminous. Skin-First. Intentional.",desc:"Fall High Gloss is not less — it's more refined. Your prep does the work. Barrier skin, strategic glow, a base that disappears and lets your actual skin lead. This season your luminosity reads intentional because you know exactly what you did to get there.",fallEnergy:"Refined and luminous. Your Fall Edit is built on prep — barrier skin, intentional highlight, a base that looks like good skin, not good coverage.",prep:"Barrier serum, SPF, a skin tint or nothing. Your prep is the whole look — protect what you built all year.",polish:"Strategic highlight at cheekbones only. A translucent lip gloss or balm. Nothing that reads heavy or competes.",signature:"Champagne glow placed with intention. The skin detail that makes people think you just came back from somewhere good.",afterhours:"Add a deeper bronzer for dimension and a glossy lip with just enough shimmer to catch the light. The glow stays the same — it just reads differently in low light.",borrow:"Let your skin be the statement. Lightweight base, one precise highlight. Add one bold blush pop swept to the temples — your prep earns the attention.",pinterest:"https://www.pinterest.com/studiotripleeight/signature-glam-styles/"},
+    wildcard:{name:"The Wild Card",tagline:"Unexpected. Textured. Singular.",desc:"Fall is your season for intention, not just experimentation. This is where you step into something richer — unexpected liner placement, a textured detail, a color that surprises in a considered way. One bold accent. Everything else clean and deliberate.",fallEnergy:"Singular and considered. Your Fall Edit is built on one unexpected detail — a surprising liner placement, a deep or unusual color, or a texture nobody else in the room is wearing.",prep:"A clean, neutral base that lets the detail lead. Nothing competing with your one intentional choice.",polish:"One unexpected element — a smoked lower lash line, a graphic inner corner, an unusual shadow placement. Everywhere else: clean.",signature:"Soft smoke in an unexpected color. A liner detail that surprises. One textured, considered choice that makes the look memorable.",afterhours:"Make the detail richer — same color, more depth and dimension under low light. The accent gets more intentional, not louder.",borrow:"Choose one unexpected detail — a deep or unusual liner, an unconventional placement — and keep everything else stripped. One move. Maximum impact.",pinterest:"https://www.pinterest.com/studiotripleeight/signature-glam-styles/"},
+    classic:{name:"The Eternal Classic",tagline:"Crisp. Refined. Seasonally Rich.",desc:"Fall gives the Eternal Classic a richer color story without touching the structure. Same crisp liner. Same polished discipline. The lip upgrades — burgundy, deep red, true plum — and the palette deepens. Classic in its truest form: the structure is so good, the color gets to be the whole update.",fallEnergy:"Structured and rich. Your Fall Edit is built on crisp liner, a deeper or bolder lip, and a polished base that holds through every moment.",prep:"A polished, controlled base. Pore-minimizing primer, a foundation that photographs clean, nothing that shifts.",polish:"Crisp liner — sharp wing or tight-line. Lifted, refined blush. The polish that makes everything else land.",signature:"A burgundy or deep red lip on a clean, structured base. The classic detail that doesn't need updating — just a seasonal color shift.",afterhours:"Deepen the lip to an oxblood or true burgundy, sharpen the liner one notch. Same precision. More atmosphere.",borrow:"Keep the crisp liner and structure you trust — just give the lip a fall upgrade. Same discipline, same precision. Totally new depth.",pinterest:"https://www.pinterest.com/studiotripleeight/signature-glam-styles/"}
   };
 
   const SKIN_RESULTS={
@@ -490,13 +539,68 @@
     t8cGo('t8c-s-result-skin');
     sendToMailchimp(sun.name,moon.name,rising.name,'skin');}
 
+  // ── EVENT SOURCE FROM URL PARAMETER ──────────────────────────────────
+  // Each event gets its own QR code URL: yoursite.com/quiz?event=suite888
+  // Mailchimp SOURCE is set automatically from the URL — no code changes needed per event
+  // ── EVENT MODE STATE ─────────────────────────────────────────────────
+  var quizEventMode = null;  // 'trying' or 'event'
+  var quizEventName = '';    // selected event name
+
+  window.setEventMode = function(mode) {
+    quizEventMode = mode;
+    document.getElementById('evt-try-btn').classList.toggle('selected',   mode === 'trying');
+    document.getElementById('evt-event-btn').classList.toggle('selected', mode === 'event');
+    var wrap = document.getElementById('evt-select-wrap');
+    wrap.classList.toggle('visible', mode === 'event');
+    if (mode === 'trying') { quizEventName = ''; document.getElementById('evt-select').value = ''; }
+  };
+
+  window.setEventName = function() {
+    quizEventName = document.getElementById('evt-select').value;
+  };
+
+  function getEventSource(track) {
+    if (quizEventMode === 'event' && quizEventName) return quizEventName;
+    return track === 'skin' ? 'Skin Style Test' : 'Signature Glam Test';
+  }
+
   function sendToMailchimp(glamtype,moon,rising,track){
     const noticeId=track==='skin'?'t8c-notice-skin':'t8c-notice-makeup';
     const notice=document.getElementById(noticeId);
-    const params={EMAIL:user.email,FNAME:user.firstName,GLAMTYPE:glamtype,MOON:moon,RISING:rising,SKINTYPE:track==='skin'?'Skin Style':'Signature Glam',SOURCE:track==='skin'?'Skin Style Test':'Signature Glam Test','b_bf55e5adf70df561dda6c1ab1_2200d8b42d':''};
+    const params={EMAIL:user.email,FNAME:user.firstName,GLAMTYPE:glamtype,MOON:moon,RISING:rising,SKINTYPE:track==='skin'?'Skin Style':'Signature Glam',SOURCE:getEventSource(track),'b_bf55e5adf70df561dda6c1ab1_2200d8b42d':''};
     const qs=Object.entries(params).map(([k,v])=>`${encodeURIComponent(k)}=${encodeURIComponent(v)}`).join('&');
     const cbName='t8cMc'+Date.now();
-    window[cbName]=function(data){delete window[cbName];if(script.parentNode)script.parentNode.removeChild(script);if(data.result==='success'||(data.result==='error'&&data.msg.includes('already subscribed'))){notice.className='email-notice ok';notice.textContent=`✓ Your Beauty Trinity has been sent to ${user.email}`;}else{notice.className='email-notice fail';notice.textContent="Couldn't email right now — your results are right here!";}};
+    window[cbName]=function(data){
+      delete window[cbName];
+      if(script.parentNode)script.parentNode.removeChild(script);
+      var success = data.result==='success'||(data.result==='error'&&data.msg.includes('already subscribed'));
+      if(success){
+        notice.className='email-notice ok';
+        notice.textContent='✓ Your Beauty Trinity has been sent to '+user.email;
+        // Apply event tag via Netlify if URL has an event param
+        try {
+          var ep = new URLSearchParams(window.location.search).get('event');
+          var eventTags = {
+            'suite888':        'Suite 888: The Founding Room',
+            'modernhaus':      'ModernHaus: The Fall Edit Reset',
+            'createcultivate': 'Create & Cultivate Festival',
+            'meetcute':        'The Fall Edit: Meet Cute @ MAC',
+            'beyondthecounter':'Beyond the Counter (LA Tech Week)',
+            'innovationedit':  'The New Beauty Counter: Beauty and Wellness Edition'
+          };
+          if(ep && eventTags[ep]){
+            fetch('https://t8c-char.netlify.app/.netlify/functions/chat',{
+              method:'POST',
+              headers:{'Content-Type':'application/json'},
+              body:JSON.stringify({action:'mc_tag',email:user.email,tag:eventTags[ep]})
+            }).catch(function(){});
+          }
+        } catch(e){}
+      } else {
+        notice.className='email-notice fail';
+        notice.textContent="Couldn't email right now — your results are right here!";
+      }
+    };
     const script=document.createElement('script');script.src=MC_URL+'&'+qs+'&c='+cbName;document.body.appendChild(script);}
 
   window.t8cSaveResults = function(track) {
