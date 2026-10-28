@@ -1110,6 +1110,11 @@
             { role: 'assistant', content: reply }
           ];
         }
+        // Log after every 3rd completed exchange (user + Char response)
+        var userTurns = chatHistory.filter(function(m) { return m.role === 'user'; }).length;
+        if (userTurns > 0 && userTurns % 3 === 0) {
+          charLogPatterns();
+        }
       } else {
         addMessage('char', "hey beauty — something glitched on my end. Try again in a sec! Luv, Char 💄");
       }
@@ -1290,16 +1295,6 @@
       keepalive: true  // allows request to complete even on page unload
     }).catch(function() {});
   }
-
-  // Log every 3rd user turn
-  var _origCallAPI = callAPI;
-  callAPI = function(messages, isOpening) {
-    _origCallAPI(messages, isOpening);
-    var turns = chatHistory.filter(function(m) { return m.role === 'user'; }).length;
-    if (!isOpening && turns > 0 && turns % 3 === 0) {
-      setTimeout(charLogPatterns, 2000); // slight delay so history is updated
-    }
-  };
 
   // Also log on page exit
   window.addEventListener('pagehide', charLogPatterns);
