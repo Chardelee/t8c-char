@@ -1,5 +1,5 @@
 // netlify/functions/kit-subscribe.js
-// Adds new quiz subscribers to Kit with Beauty Trinity tags
+// Adds new quiz subscribers to Kit using v3 API with API Secret
 
 exports.handler = async function(event) {
   var CORS = {
@@ -17,31 +17,57 @@ exports.handler = async function(event) {
   }
 
   try {
-    var data = JSON.parse(event.body);
-    var email    = data.email    || '';
-    var firstName = data.firstName || '';
-    var glamType  = data.glamType  || '';
-    var moon      = data.moon      || '';
-    var rising    = data.rising    || '';
-    var skinType  = data.skinType  || '';
-    var source    = data.source    || '';
+    var data       = JSON.parse(event.body);
+    var email      = data.email      || '';
+    var firstName  = data.firstName  || '';
+    var glamType   = data.glamType   || '';
+    var moon       = data.moon       || '';
+    var rising     = data.rising     || '';
+    var source     = data.source     || '';
 
     if (!email) {
       return { statusCode: 400, headers: CORS, body: JSON.stringify({ error: 'Email required' }) };
     }
 
-    var API_KEY = process.env.KIT_API_KEY;
-    var BASE    = 'https://api.kit.com/v4';
-    var headers = {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + API_KEY
-    };
+    var API_SECRET = process.env.KIT_API_KEY;
+    var BASE       = 'https://api.convertkit.com/v3';
 
-    // ── 1. Create / update subscriber ──────────────────────────────────
-    var subRes  = await fetch(BASE + '/subscribers', {
+    // ── Build tag name list ────────────────────────────────────────────────
+    var tagNames = ['SGT Subscriber'];
+    if (glamType) tagNames.push('Core: ' + glamType);
+    if (moon)     tagNames.push('Moon: ' + moon);
+    if (rising)   tagNames.push('Rising: ' + rising);
+    if (source)   tagNames.push('Source: ' + source);
+
+    // ── Create each tag (idempotent), collect IDs ──────────────────────────
+    var tagIds = [];
+    for (var i = 0; i < tagNames.length; i++) {
+      try {
+        var tagRes  = await fetch(BASE + '/tags', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ api_secret: API_SECRET, tag: { name: tagNames[i] } })
+        });
+        var tagData = await tagRes.json();
+        if (tagData.id) tagIds.push(tagData.id);
+      } catch (e) {
+        console.log('Tag create error:', tagNames[i], e.message);
+      }
+    }
+
+    // ── Subscribe via first tag (creates subscriber + applies tag) ─────────
+    if (tagIds.length === 0) {
+      return { statusCode: 500, headers: CORS, body: JSON.stringify({ error: 'No tags created' }) };
+    }
+
+    var subRes = await fetch(BASE + '/tags/' + tagIds[0] + '/subscribe', {
       method: 'POST',
-      headers: headers,
-      body: JSON.stringify({ email_address: email, first_name: firstName })
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        api_secret: API_SECRET,
+        email:      email,
+        first_name: firstName
+      })
     });
     var subData = await subRes.json();
 
@@ -49,36 +75,16 @@ exports.handler = async function(event) {
       return { statusCode: subRes.status, headers: CORS, body: JSON.stringify({ error: subData }) };
     }
 
-    var subscriberId = subData.subscriber.id;
-
-    // ── 2. Build tag list ───────────────────────────────────────────────
-    var tagNames = ['SGT Subscriber'];
-    if (glamType) tagNames.push('Core: ' + glamType);
-    if (moon)     tagNames.push('Moon: ' + moon);
-    if (rising)   tagNames.push('Rising: ' + rising);
-    if (source)   tagNames.push('Source: ' + source);
-
-    // ── 3. Create each tag (idempotent) then apply to subscriber ────────
-    for (var i = 0; i < tagNames.length; i++) {
+    // ── Apply remaining tags ───────────────────────────────────────────────
+    for (var j = 1; j < tagIds.length; j++) {
       try {
-        var tagRes  = await fetch(BASE + '/tags', {
+        await fetch(BASE + '/tags/' + tagIds[j] + '/subscribe', {
           method: 'POST',
-          headers: headers,
-          body: JSON.stringify({ name: tagNames[i] })
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ api_secret: API_SECRET, email: email })
         });
-        var tagData = await tagRes.json();
-        var tagId   = tagData.tag && tagData.tag.id;
-
-        if (tagId) {
-          await fetch(BASE + '/subscribers/' + subscriberId + '/tags', {
-            method: 'POST',
-            headers: headers,
-            body: JSON.stringify({ tag_id: tagId })
-          });
-        }
-      } catch (tagErr) {
-        // one bad tag shouldn't kill the whole submission
-        console.log('Tag error for "' + tagNames[i] + '":', tagErr.message);
+      } catch (e) {
+        console.log('Tag apply error:', tagIds[j], e.message);
       }
     }
 
