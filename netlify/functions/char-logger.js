@@ -76,14 +76,18 @@ exports.handler = async function(event) {
       return { statusCode: 200, headers: CORS, body: JSON.stringify({ success: true, note: 'logging disabled' }) };
     }
 
-    await fetch(APPS_SCRIPT_URL, {
+    var scriptRes = await fetch(APPS_SCRIPT_URL, {
       method:   'POST',
       headers:  { 'Content-Type': 'application/json' },
       body:     JSON.stringify({ topics, keywords, glamType, moon, rising, sessionId, turnCount }),
       redirect: 'follow'
     });
 
-    return { statusCode: 200, headers: CORS, body: JSON.stringify({ success: true }) };
+    var scriptBody = await scriptRes.text();
+    console.log('Apps Script status:', scriptRes.status, 'url:', scriptRes.url);
+    console.log('Apps Script body:', scriptBody.slice(0, 300));
+
+    return { statusCode: 200, headers: CORS, body: JSON.stringify({ success: true, scriptStatus: scriptRes.status }) };
 
   } catch (err) {
     // Logger errors are silent — never break the chat experience
