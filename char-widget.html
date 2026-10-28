@@ -1313,9 +1313,14 @@
     fetch('https://t8c-char.netlify.app/.netlify/functions/char-logger', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify(payload),
-      keepalive: true  // allows request to complete even on page unload
-    }).catch(function() {});
+      body:    JSON.stringify(payload)
+    }).then(function(r) {
+      return r.json().then(function(j) {
+        console.log('[Char CRM] status=' + r.status, j);
+      });
+    }).catch(function(err) {
+      console.warn('[Char CRM] fetch error:', err);
+    });
   }
 
   // Also log on page exit
