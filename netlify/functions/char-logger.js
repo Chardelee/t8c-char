@@ -76,16 +76,35 @@ exports.handler = async function(event) {
       return { statusCode: 200, headers: CORS, body: JSON.stringify({ success: true, note: 'logging disabled' }) };
     }
 
+    var payload = JSON.stringify({ topics, keywords, glamType, moon, rising, sessionId, turnCount });
+
+    // Use redirect:'manual' — GAS does a 302 on POST and fetch's auto-follow
+    // converts POST→GET, which means doPost() never fires.
     var scriptRes = await fetch(APPS_SCRIPT_URL, {
-      method:   'POST',
-      headers:  { 'Content-Type': 'application/json' },
-      body:     JSON.stringify({ topics, keywords, glamType, moon, rising, sessionId, turnCount }),
-      redirect: 'follow'
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    payload,
+      redirect: 'manual'
     });
 
+    console.log('GAS initial status:', scriptRes.status);
+
+    // Follow 301/302 manually so we keep POST + body
+    if (scriptRes.status >= 300 && scriptRes.status < 400) {
+      var loc = scriptRes.headers.get('location');
+      console.log('GAS redirect to:', loc ? loc.slice(0, 120) : 'none');
+      if (loc) {
+        scriptRes = await fetch(loc, {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body:    payload
+        });
+      }
+    }
+
     var scriptBody = await scriptRes.text();
-    console.log('Apps Script status:', scriptRes.status, 'url:', scriptRes.url);
-    console.log('Apps Script body:', scriptBody.slice(0, 300));
+    console.log('GAS final status:', scriptRes.status);
+    console.log('GAS body:', scriptBody.slice(0, 300));
 
     return { statusCode: 200, headers: CORS, body: JSON.stringify({ success: true, scriptStatus: scriptRes.status }) };
 
