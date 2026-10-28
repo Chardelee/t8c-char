@@ -1255,6 +1255,57 @@
     _obs.observe(_msgContainer, { childList: true });
   }
 
+  // ── ANALYTICS LOGGER ─────────────────────────────────────────────────
+  // Sends pattern data (topics/keywords only — NO transcripts) to Char Insights sheet
+  // Fires: after every 3rd user turn + on page unload
+  var _loggedTurns = 0;
+
+  function charLogPatterns() {
+    if (chatHistory.length < 2) return; // nothing worth logging yet
+    var turnCount = chatHistory.filter(function(m) { return m.role === 'user'; }).length;
+    if (turnCount === _loggedTurns) return; // nothing new
+    _loggedTurns = turnCount;
+
+    var payload = {
+      messages:  chatHistory.map(function(m) {
+        // Strip image content — send text only to logger (privacy)
+        var content = m.content;
+        if (Array.isArray(content)) {
+          content = content.filter(function(c) { return c.type === 'text'; })
+                           .map(function(c) { return c.text; }).join(' ');
+        }
+        return { role: m.role, content: content };
+      }),
+      glamType:  charUser.sun    || '',
+      moon:      charUser.moon   || '',
+      rising:    charUser.rising || '',
+      sessionId: getCharMemberId()
+    };
+
+    // Fire and forget — logger errors never affect chat
+    fetch('https://t8c-char.netlify.app/.netlify/functions/char-logger', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify(payload),
+      keepalive: true  // allows request to complete even on page unload
+    }).catch(function() {});
+  }
+
+  // Log every 3rd user turn
+  var _origCallAPI = callAPI;
+  callAPI = function(messages, isOpening) {
+    _origCallAPI(messages, isOpening);
+    var turns = chatHistory.filter(function(m) { return m.role === 'user'; }).length;
+    if (!isOpening && turns > 0 && turns % 3 === 0) {
+      setTimeout(charLogPatterns, 2000); // slight delay so history is updated
+    }
+  };
+
+  // Also log on page exit
+  window.addEventListener('pagehide', charLogPatterns);
+  window.addEventListener('visibilitychange', function() {
+    if (document.visibilityState === 'hidden') charLogPatterns();
+  });
 
 </script>
 
