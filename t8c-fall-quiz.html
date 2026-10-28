@@ -133,6 +133,26 @@
   margin-top:16px !important;
 }
 .t8c-quiz .save-results-btn:hover { background:var(--cream) !important; }
+.t8c-quiz .char-cta-btn {
+  display:block !important;
+  width:100% !important;
+  padding:14px 20px !important;
+  background:linear-gradient(135deg, var(--amber), var(--magenta)) !important;
+  border:none !important;
+  border-radius:8px !important;
+  font-family:'Lora',serif !important;
+  font-size:11px !important;
+  font-weight:500 !important;
+  letter-spacing:2px !important;
+  text-transform:uppercase !important;
+  color:#fff !important;
+  cursor:pointer !important;
+  transition:opacity 0.2s !important;
+  text-align:center !important;
+  margin-top:12px !important;
+  text-decoration:none !important;
+}
+.t8c-quiz .char-cta-btn:hover { opacity:0.88 !important; }
 .t8c-quiz .event-toggle-wrap { margin-top: 22px !important; }
 .t8c-quiz .event-toggle-grid { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 10px !important; }
 .t8c-quiz .event-toggle-btn {
@@ -307,7 +327,7 @@
       <div class="ic-box">
         <span class="ic-label">✦ Your Fall Edit Continues</span>
         <div class="ic-title">Welcome to Inner Circle.</div>
-        <p class="ic-desc">You've found your Beauty Trinity. Your Fall Edit continues inside Inner Circle — deeper recommendations, Char prompts, seasonal product notes, event access, and beauty guidance based on your result. Take your Beauty Trinity into Char for a more personalized Fall Edit overview — save your results and share them when you start your Char session.</p>
+        <p class="ic-desc">You've found your Beauty Trinity. Char already knows your results — tap below and she'll open right where you left off. No re-entering anything.</p>
         <p class="ic-free">✓ You're now part of Inner Circle Free. Your Beauty Trinity and Fall Edit access are confirmed.</p>
         <a class="ic-upgrade-link" href="https://buy.stripe.com/9B614oeviaCh7k4gEKgrS0d" target="_blank">Upgrade for deeper guidance, event access + Char anytime →</a>
       </div>
@@ -317,6 +337,7 @@
       </div>
       <div class="email-notice" id="t8c-notice-makeup"></div>
       <button class="save-results-btn" onclick="t8cSaveResults('makeup')">↓ Save My Beauty Trinity</button>
+      <div id="t8c-char-cta-makeup"></div>
     </div>
   </div>
 
@@ -368,7 +389,7 @@
       <div class="ic-box">
         <span class="ic-label">✦ Your Fall Edit Continues</span>
         <div class="ic-title">Welcome to Inner Circle.</div>
-        <p class="ic-desc">You've found your Skin Style. Your Fall Edit continues inside Inner Circle — deeper recommendations, Char prompts, seasonal product notes, event access, and guidance based on your result. Take your Skin Style into Char for a more personalized Fall Edit overview — save your results and share them when you start your Char session.</p>
+        <p class="ic-desc">You've found your Skin Style. Char already knows your results — tap below and she'll open right where you left off. No re-entering anything.</p>
         <p class="ic-free">✓ You're now part of Inner Circle Free. Your Skin Style and Fall Edit access are confirmed.</p>
         <a class="ic-upgrade-link" href="https://buy.stripe.com/9B614oeviaCh7k4gEKgrS0d" target="_blank">Upgrade for deeper guidance, event access + Char anytime →</a>
       </div>
@@ -383,6 +404,7 @@
       </div>
       <div class="email-notice" id="t8c-notice-skin"></div>
       <button class="save-results-btn" onclick="t8cSaveResults('skin')">↓ Save My Skin Style</button>
+      <div id="t8c-char-cta-skin"></div>
     </div>
   </div>
 </div>
@@ -392,6 +414,8 @@
   const MC_URL="https://tripleeightcreative.us12.list-manage.com/subscribe/post-json?u=bf55e5adf70df561dda6c1ab1&id=2200d8b42d&f_id=00c5ffe3f0";
   const FALL_SVC="https://app.acuityscheduling.com/schedule.php?owner=30467723&appointmentType=category:The%20Fall%20Edit";
   const SIG_SVC="https://app.acuityscheduling.com/schedule.php?owner=30467723&appointmentType=category:Signature%20Glam%20Services%20";
+  // ── CHAR HANDOFF — set this to the URL of your Char page ─────────────
+  const CHAR_URL = 'https://www.tripleeightcreative.com/char';
 
   let activeTrack=null,currentQ=0,answers=[],user={firstName:'',email:''};
 
@@ -519,7 +543,8 @@
     document.getElementById('t8c-rising-tagline').textContent=rising.tagline;
     document.getElementById('t8c-rising-desc').textContent=rising.borrow;
     t8cGo('t8c-s-result-makeup');
-    sendToKit(sun.name,moon.name,rising.name,'makeup');}
+    sendToKit(sun.name,moon.name,rising.name,'makeup');
+    injectCharBtn(user.firstName,sun.name,moon.name,rising.name,'t8c-char-cta-makeup');}
 
   function revealSkin(){const ranked=scoreSkin(),sun=SKIN_RESULTS[ranked[0].type],moon=SKIN_RESULTS[ranked[1].type],rising=SKIN_RESULTS[ranked[2].type];
     document.getElementById('t8c-skin-number').textContent=sun.number;
@@ -537,7 +562,8 @@
     document.getElementById('t8c-skin-rising-tagline').textContent=rising.tagline;
     document.getElementById('t8c-skin-rising-desc').textContent=rising.borrow;
     t8cGo('t8c-s-result-skin');
-    sendToKit(sun.name,moon.name,rising.name,'skin');}
+    sendToKit(sun.name,moon.name,rising.name,'skin');
+    injectCharBtn(user.firstName,sun.name,moon.name,rising.name,'t8c-char-cta-skin');}
 
   // ── EVENT SOURCE FROM URL PARAMETER ──────────────────────────────────
   // Each event gets its own QR code URL: yoursite.com/quiz?event=suite888
@@ -558,6 +584,34 @@
   window.setEventName = function() {
     quizEventName = document.getElementById('evt-select').value;
   };
+
+  // ── CHAR HANDOFF HELPERS ──────────────────────────────────────────────
+  function getCharMode() {
+    var map = {
+      'Entering My Villain Era: Speed Networking After Dark': 'villainera',
+      'T8C Pop-Up': 't8cpopup',
+      'Hotel Partner': 'hotelpartner'
+    };
+    return map[quizEventName] || '';
+  }
+
+  function buildCharLink(name, core, moon, rising) {
+    var p = '?name=' + encodeURIComponent(name);
+    p += '&core=' + encodeURIComponent(core);
+    if (moon)   p += '&moon='   + encodeURIComponent(moon);
+    if (rising) p += '&rising=' + encodeURIComponent(rising);
+    p += '&status=event';
+    var mode = getCharMode();
+    if (mode) p += '&mode=' + mode;
+    return CHAR_URL + p;
+  }
+
+  function injectCharBtn(name, core, moon, rising, containerId) {
+    var container = document.getElementById(containerId);
+    if (!container) return;
+    var link = buildCharLink(name, core, moon, rising);
+    container.innerHTML = '<a class="char-cta-btn" href="' + link + '" target="_blank">✦ Chat with Char about your results →</a>';
+  }
 
   function getEventSource(track) {
     if (quizEventMode === 'event' && quizEventName) return quizEventName;

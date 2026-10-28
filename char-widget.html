@@ -781,6 +781,40 @@
     if (eventGroup) eventGroup.style.display = (status === 'event') ? 'block' : 'none';
     if (status !== 'event') document.getElementById('char-mode').value = 'standard';
   };
+  // ── QUIZ HANDOFF — auto-load Beauty Trinity from URL params ──────────
+  // Triggered when someone taps "Chat with Char" on the quiz results page
+  function charLoadFromParams() {
+    var params = new URLSearchParams(window.location.search);
+    var pName   = params.get('name');
+    var pCore   = params.get('core');
+    if (!pName || !pCore) return; // not a quiz handoff — show normal onboarding
+    var pMoon   = params.get('moon')   || '';
+    var pRising = params.get('rising') || '';
+    var pMode   = params.get('mode')   || 'standard';
+    var pStatus = params.get('status') || 'event';
+
+    charUser = { name: pName, sun: pCore, moon: pMoon, rising: pRising, isMember: pStatus };
+
+    var modeEl = document.getElementById('char-mode');
+    if (modeEl && pMode !== 'standard') modeEl.value = pMode;
+
+    var coreShort   = pCore.replace('The ','');
+    var moonShort   = pMoon.replace('The ','');
+    var risingShort = pRising.replace('The ','');
+
+    document.getElementById('char-header-glam').innerHTML =
+      '✦ ' + coreShort +
+      (pMoon   ? '<br>☽ ' + moonShort   : '') +
+      (pRising ? '<br>↑ ' + risingShort : '');
+
+    document.getElementById('char-onboard').style.display = 'none';
+    document.getElementById('char-chat').classList.add('active');
+    document.querySelector('.char-wrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    charInitialMessage();
+  }
+  document.addEventListener('DOMContentLoaded', charLoadFromParams);
+
   let chatHistory = [];
   let isTyping    = false;
   let pendingPhoto = null; // { base64, mediaType } set when user uploads a photo
