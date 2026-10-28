@@ -193,13 +193,9 @@
         <div class="event-select-wrap" id="evt-select-wrap">
           <select class="event-select" id="evt-select" onchange="setEventName()">
             <option value="">Select your event...</option>
-            <option value="Create &amp; Cultivate Festival">Create &amp; Cultivate Festival</option>
-            <option value="The Daughter Edit">The Daughter Edit</option>
-            <option value="The Fall Edit: Meet Cute @ MAC">The Fall Edit: Meet Cute @ MAC</option>
+            <option value="Entering My Villain Era: Speed Networking After Dark">Entering My Villain Era: Speed Networking After Dark</option>
+            <option value="T8C Pop-Up">T8C Pop-Up</option>
             <option value="Hotel Partner">Hotel Partner</option>
-            <option value="LA Tech Week">LA Tech Week</option>
-            <option value="Beyond the Counter">Beyond the Counter</option>
-            <option value="The New Beauty Counter">The New Beauty Counter: Beauty and Wellness Edition</option>
           </select>
         </div>
       </div>
@@ -523,7 +519,7 @@
     document.getElementById('t8c-rising-tagline').textContent=rising.tagline;
     document.getElementById('t8c-rising-desc').textContent=rising.borrow;
     t8cGo('t8c-s-result-makeup');
-    sendToMailchimp(sun.name,moon.name,rising.name,'makeup');}
+    sendToKit(sun.name,moon.name,rising.name,'makeup');}
 
   function revealSkin(){const ranked=scoreSkin(),sun=SKIN_RESULTS[ranked[0].type],moon=SKIN_RESULTS[ranked[1].type],rising=SKIN_RESULTS[ranked[2].type];
     document.getElementById('t8c-skin-number').textContent=sun.number;
@@ -541,7 +537,7 @@
     document.getElementById('t8c-skin-rising-tagline').textContent=rising.tagline;
     document.getElementById('t8c-skin-rising-desc').textContent=rising.borrow;
     t8cGo('t8c-s-result-skin');
-    sendToMailchimp(sun.name,moon.name,rising.name,'skin');}
+    sendToKit(sun.name,moon.name,rising.name,'skin');}
 
   // ── EVENT SOURCE FROM URL PARAMETER ──────────────────────────────────
   // Each event gets its own QR code URL: yoursite.com/quiz?event=suite888
@@ -568,44 +564,38 @@
     return track === 'skin' ? 'Skin Style Test' : 'Signature Glam Test';
   }
 
-  function sendToMailchimp(glamtype,moon,rising,track){
+  function sendToKit(glamtype,moon,rising,track){
     const noticeId=track==='skin'?'t8c-notice-skin':'t8c-notice-makeup';
     const notice=document.getElementById(noticeId);
-    const params={EMAIL:user.email,FNAME:user.firstName,GLAMTYPE:glamtype,MOON:moon,RISING:rising,SKINTYPE:track==='skin'?'Skin Style':'Signature Glam',SOURCE:getEventSource(track),'b_bf55e5adf70df561dda6c1ab1_2200d8b42d':''};
-    const qs=Object.entries(params).map(([k,v])=>`${encodeURIComponent(k)}=${encodeURIComponent(v)}`).join('&');
-    const cbName='t8cMc'+Date.now();
-    window[cbName]=function(data){
-      delete window[cbName];
-      if(script.parentNode)script.parentNode.removeChild(script);
-      var success = data.result==='success'||(data.result==='error'&&data.msg.includes('already subscribed'));
-      if(success){
+    const source=getEventSource(track);
+    fetch('https://t8c-char.netlify.app/.netlify/functions/kit-subscribe',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        email:    user.email,
+        firstName:user.firstName,
+        glamType: glamtype,
+        moon:     moon,
+        rising:   rising,
+        skinType: track==='skin'?'Skin Style':'Signature Glam',
+        source:   source
+      })
+    })
+    .then(function(res){return res.json();})
+    .then(function(data){
+      if(data.success){
         notice.className='email-notice ok';
         notice.textContent='✓ Your Beauty Trinity has been sent to '+user.email;
-        // Apply event tag via Netlify if URL has an event param
-        try {
-          var ep = new URLSearchParams(window.location.search).get('event');
-          var eventTags = {
-            'suite888':        'Suite 888: The Founding Room',
-            'modernhaus':      'ModernHaus: The Fall Edit Reset',
-            'createcultivate': 'Create & Cultivate Festival',
-            'meetcute':        'The Fall Edit: Meet Cute @ MAC',
-            'beyondthecounter':'Beyond the Counter (LA Tech Week)',
-            'innovationedit':  'The New Beauty Counter: Beauty and Wellness Edition'
-          };
-          if(ep && eventTags[ep]){
-            fetch('https://t8c-char.netlify.app/.netlify/functions/chat',{
-              method:'POST',
-              headers:{'Content-Type':'application/json'},
-              body:JSON.stringify({action:'mc_tag',email:user.email,tag:eventTags[ep]})
-            }).catch(function(){});
-          }
-        } catch(e){}
       } else {
         notice.className='email-notice fail';
         notice.textContent="Couldn't email right now — your results are right here!";
       }
-    };
-    const script=document.createElement('script');script.src=MC_URL+'&'+qs+'&c='+cbName;document.body.appendChild(script);}
+    })
+    .catch(function(){
+      notice.className='email-notice fail';
+      notice.textContent="Couldn't email right now — your results are right here!";
+    });
+  }
 
   window.t8cSaveResults = function(track) {
     var lines = ['✦ YOUR BEAUTY TRINITY', 'Triple Eight Creative — The Fall Edit: Structured', ''];

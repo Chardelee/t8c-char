@@ -630,13 +630,9 @@
       <span class="char-field-label">Which Event?</span>
       <select class="char-select" id="char-mode" onchange="charModeSwitch()">
         <option value="standard">Select your event...</option>
-        <option value="createcultivate">Create &amp; Cultivate Festival</option>
-        <option value="daughteredit">The Daughter Edit</option>
-        <option value="meetcute">The Fall Edit: Meet Cute @ MAC</option>
+        <option value="villainera">Entering My Villain Era: Speed Networking After Dark</option>
+        <option value="t8cpopup">T8C Pop-Up</option>
         <option value="hotelpartner">Hotel Partner</option>
-        <option value="latechweek">LA Tech Week</option>
-        <option value="beyondthecounter">Beyond the Counter</option>
-        <option value="newbeautycounter">The New Beauty Counter: Beauty &amp; Wellness Edition</option>
       </select>
     </div>
 
@@ -792,19 +788,11 @@
   // ── SYSTEM PROMPT ────────────────────────────────────────────────────
   function getEventPrompt(mode) {
     var events = {
-      createcultivate: '## EVENT MODE — CREATE & CULTIVATE FESTIVAL\n\nYou are at Create & Cultivate with Triple Eight Creative. Guests are attending a founder, creator, and business festival — they want beauty that works for photos, networking, panels, and long days. They have their Beauty Trinity. Help them stay polished and considered throughout.\n\nYOUR ROLE: Turn their Beauty Trinity into a festival-ready beauty plan that holds from morning panels to evening networking without a full reset.\n\nSUGGESTED PROMPTS:\n1. What is my festival beauty look based on my Beauty Trinity?\n2. What should I carry for quick touch-ups between panels, photos, and networking?',
+      villainera: 'Entering My Villain Era: Speed Networking After Dark is a high-energy networking event. Guests are here to connect, make impressions, and show up as the most intentional version of themselves. Your role: help them use their Beauty Trinity to look and feel like the main character in the room. Think bold, considered, After Hours energy from the jump. SUGGESTED PROMPTS: 1. What does my Beauty Trinity say about my villain era beauty look tonight? 2. What is my Prep, Polish, and Signature for making an impression at a networking event?',
 
-      daughteredit: '## EVENT MODE — THE DAUGHTER EDIT\n\nYou are at The Daughter Edit, a Triple Eight Creative beauty experience. This is a warm, personal, community-forward event. Guests may be discovering their beauty identity for the first time or deepening an existing one. Meet them where they are.\n\nYOUR ROLE: Help guests connect their Beauty Trinity to beauty that feels personal, accessible, and theirs. Keep the energy warm and inviting — this is about discovery, not performance.\n\nSUGGESTED PROMPTS:\n1. What does my Beauty Trinity say about the beauty look that actually feels like me?\n2. What are the first Prep, Polish, and Signature products I should start with?',
+      t8cpopup: 'You are at a Triple Eight Creative pop-up activation. Guests are discovering the T8C Beauty Layer for the first time. Keep the experience warm, clear, and accessible. Help them understand their Beauty Trinity and what to do with it right now. SUGGESTED PROMPTS: 1. What does my Beauty Trinity actually mean and how do I use it? 2. What are the first three products I should try based on my result?',
 
-      beyondthecounter: '## EVENT MODE — BEYOND THE COUNTER\n\nYou are at Beyond the Counter, a Triple Eight Creative activation at the intersection of beauty, wellness, and culture. Guests may be coming from a fitness, courtside, or community experience. Help them use their Beauty Trinity to think about how beauty, wellness, and identity connect and how they prepare to show up in the next room.\n\nSUGGESTED PROMPTS:\n1. How does my Beauty Trinity translate into a beauty, skin, or wellness reset right now?\n2. What does my result say about the kind of beauty guidance I actually need?',
-
-      newbeautycounter: '## EVENT MODE — THE NEW BEAUTY COUNTER: BEAUTY AND WELLNESS EDITION\n\nYou are at The New Beauty Counter: Beauty and Wellness Edition — a founder marketplace and product discovery experience. Guests may be founders, vendors, creatives, investors, or community members. Help them explore their Beauty Trinity, discover products with more context, and think about how their beauty identity connects to who they are as builders.\n\nSUGGESTED PROMPTS:\n1. What does my Beauty Trinity say about how I show up as a founder or creative?\n2. What should I look for when discovering beauty and wellness products at this event?',
-
-      latechweek: '## EVENT MODE — LA TECH WEEK\n\nYou are at a Triple Eight Creative activation during LA Tech Week. Guests are founders, creatives, technologists, investors, and community members at the intersection of beauty, wellness, and tech.\n\nYOUR ROLE: Help guests connect their Beauty Trinity to how they show up in professional and social spaces — polished, considered, and on brand for their own identity. Think: beauty that works across a full day of panels, networking, and evening events.\n\nSUGGESTED PROMPTS:\n1. What does my Beauty Trinity say about how I show up as a founder or creative this week?\n2. What is my Prep, Polish, and Signature for a full day of networking and events?',
-
-      hotelpartner: '## EVENT MODE — HOTEL PARTNER ACTIVATION\n\nYou are at a hotel partner activation with Triple Eight Creative. The Beauty Layer is being brought into a hospitality setting — guests may be hotel residents, event attendees, or guests of the property.\n\nYOUR ROLE: Help guests connect their Beauty Trinity to beauty guidance that fits a hotel experience — getting ready, looking polished, feeling considered. Think: pre-dinner refresh, morning glow ritual, travel-ready beauty, event-ready polish.\n\nSUGGESTED PROMPTS:\n1. What does my Beauty Trinity say about my getting-ready routine for tonight?\n2. What should I have in my travel beauty bag based on my result?',
-
-      meetcute: '## EVENT MODE — THE FALL EDIT: MEET CUTE @ MAC\n\nYou are at The Fall Edit: Meet Cute @ MAC. This event is about Fall Edit glam, skin, connection, profile-ready beauty, and showing up online and IRL. MAC products are available — include MAC-specific recommendations where they fit the guest Trinity.\n\nYOUR ROLE: Connect their Beauty Trinity to fall glam, skin prep, profile-ready beauty, and the way they want to be seen this season.\n\nSUGGESTED PROMPTS:\n1. What does my Beauty Trinity say about my date-night or profile-ready beauty look?\n2. Which MAC Fall Edit products should I explore for my Prep, Polish, and Signature?'
+      hotelpartner: 'You are at a hotel partner activation with Triple Eight Creative. Guests may be hotel residents, event attendees, or guests of the property. Help them use their Beauty Trinity for getting ready, pre-event polish, or a travel-ready refresh. SUGGESTED PROMPTS: 1. What does my Beauty Trinity say about my getting-ready routine for tonight? 2. What should I have in my travel beauty bag based on my result?'
     };
     return events[mode] || '';
   }
@@ -1234,42 +1222,5 @@
   }
 
 
-</script>    var events = {
-      createcultivate: `## EVENT MODE — CREATE & CULTIVATE FESTIVAL
-
-You are at Create & Cultivate with Triple Eight Creative.
-
-Guests are attending a founder, creator, and business festival. They may want beauty that works for photos, networking, panels, and long days. They took the Signature Glam Test and have their Beauty Trinity. Help them use it to stay polished and considered throughout the day.
-
-YOUR ROLE: Turn their Beauty Trinity into a festival-ready beauty plan — one that holds from morning panels to evening networking without needing a full reset.
-
-SUGGESTED CHAR PROMPTS FOR THIS EVENT:
-1. What is my festival beauty look based on my Beauty Trinity?
-2. What should I carry for quick touch-ups between panels, photos, and networking?`,
-
-      daughteredit: `## EVENT MODE — THE DAUGHTER EDIT
-
-You are at The Daughter Edit, a Triple Eight Creative experience.
-
-Char should understand this is a curated beauty experience — warm, personal, and community-forward. Guests may be discovering their beauty identity for the first time or deepening an existing one. Meet them where they are.
-
-YOUR ROLE: Help guests connect their Beauty Trinity to beauty that feels personal, accessible, and theirs. Keep the energy warm and inviting — this is about discovery, not performance.
-
-SUGGESTED CHAR PROMPTS FOR THIS EVENT:
-1. What does my Beauty Trinity say about the beauty look that actually feels like me?
-2. What are the first Prep, Polish, and Signature products I should start with?`,
-
-      meetcute: `## EVENT MODE — THE FALL EDIT: MEET CUTE @ MAC
-
-You are at The Fall Edit: Meet Cute @ MAC, a client-facing beauty and connection event.
-
-This event is about Fall Edit glam, skin, connection, profile-ready beauty, and showing up online and IRL. MAC products are available and relevant here — include MAC-specific recommendations where they fit the guest's Trinity.
-
-YOUR ROLE: Connect their Beauty Trinity to fall glam, skin prep, profile-ready beauty, and the way they want to be seen this season.
-
-SUGGESTED CHAR PROMPTS FOR THIS EVENT:
-1. What does my Beauty Trinity say about my date-night or profile-ready beauty look?
-2. Which MAC Fall Edit products should I explore for my Prep, Polish, and Signature?`
-    };
-
 </script>
+
