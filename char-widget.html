@@ -700,8 +700,8 @@
     </div>
 
     <div class="char-field-group">
-      <span class="char-field-label">Your email (optional)</span>
-      <input class="char-input" type="email" id="char-email-input" placeholder="Get your Beauty Trinity results in your inbox">
+      <span class="char-field-label">Your email *</span>
+      <input class="char-input" type="email" id="char-email-input" placeholder="We'll send your full Beauty Trinity results">
     </div>
 
     <button class="char-btn" onclick="charStart()">Chat with Char →</button>
@@ -980,6 +980,7 @@
 
     if (!sun)  { alert("Please select your Signature Glam style."); return; }
     if (!name) { alert("Please enter your first name."); return; }
+    if (!email || !email.includes('@')) { alert("Please enter your email — we'll send your full Beauty Trinity results."); return; }
     if (charUser.isMember === null) { alert("Quick one — pick the option that fits you best."); return; }
     if (charUser.isMember === 'event') {
       var selectedMode = document.getElementById('char-mode').value;
