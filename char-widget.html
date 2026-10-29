@@ -699,11 +699,6 @@
       <input class="char-input" type="text" id="char-name-input" placeholder="What should Char call you?">
     </div>
 
-    <div class="char-field-group">
-      <span class="char-field-label">Your email *</span>
-      <input class="char-input" type="email" id="char-email-input" placeholder="We'll send your full Beauty Trinity results">
-    </div>
-
     <button class="char-btn" onclick="charStart()">Chat with Char →</button>
   </div>
 
@@ -769,7 +764,7 @@
   const MODEL   = 'claude-sonnet-4-6';
 
   // ── STATE ────────────────────────────────────────────────────────────
-  let charUser    = { name:'', email:'', sun:'', moon:'', rising:'', isMember:null };
+  let charUser    = { name:'', sun:'', moon:'', rising:'', isMember:null };
 
   // ── MEMBER / GUEST TOGGLE ───────────────────────────────────────────────
   // charModeSwitch — called when guest selects an event from the dropdown
@@ -797,12 +792,7 @@
     var pRising = params.get('rising') || '';
     var pMode   = params.get('mode')   || 'standard';
     var pStatus = params.get('status') || 'event';
-    var pEmail  = params.get('email')  || '';
-
-    charUser = { name: pName, email: pEmail, sun: pCore, moon: pMoon, rising: pRising, isMember: pStatus };
-
-    // Send Beauty Trinity results email if email was passed from quiz page
-    if (pEmail) charSendResultsEmail(pEmail, pName, pCore, pMoon, pRising);
+    charUser = { name: pName, sun: pCore, moon: pMoon, rising: pRising, isMember: pStatus };
 
     var modeEl = document.getElementById('char-mode');
     if (modeEl && pMode !== 'standard') modeEl.value = pMode;
@@ -976,21 +966,15 @@
     var moon   = document.getElementById('char-moon').value;
     var rising = document.getElementById('char-rising').value;
     var name   = document.getElementById('char-name-input').value.trim();
-    var email  = document.getElementById('char-email-input').value.trim();
-
     if (!sun)  { alert("Please select your Signature Glam style."); return; }
     if (!name) { alert("Please enter your first name."); return; }
-    if (!email || !email.includes('@')) { alert("Please enter your email — we'll send your full Beauty Trinity results."); return; }
     if (charUser.isMember === null) { alert("Quick one — pick the option that fits you best."); return; }
     if (charUser.isMember === 'event') {
       var selectedMode = document.getElementById('char-mode').value;
       if (!selectedMode || selectedMode === 'standard') { alert("Please select which event you're at."); return; }
     }
 
-    charUser = { name: name, email: email, sun: sun, moon: moon, rising: rising, isMember: charUser.isMember };
-
-    // Send Beauty Trinity results email
-    charSendResultsEmail(email, name, sun, moon, rising);
+    charUser = { name: name, sun: sun, moon: moon, rising: rising, isMember: charUser.isMember };
 
     document.getElementById('char-header-glam').innerHTML =
       '✦ ' + sun.replace('The ','') +
