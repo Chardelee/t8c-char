@@ -105,11 +105,8 @@ exports.handler = async function(event) {
 // Runs after we've already returned success to the client.
 // If this fails it does NOT affect whether the subscriber was captured.
 function tagSubscriberAsync(apiKey, email, glamType, moon, rising, source) {
-  var tagNames = ['SGT Subscriber'];
-  if (glamType) tagNames.push('Core: ' + glamType);
-  if (moon)     tagNames.push('Moon: ' + moon);
-  if (rising)   tagNames.push('Rising: ' + rising);
-  if (source)   tagNames.push('Source: ' + source);
+  var tagNames = ['Signature Glam Test'];
+  if (source) tagNames.push(source);
 
   // Best-effort: create tags and apply them; log errors but don't throw.
   (async function() {
