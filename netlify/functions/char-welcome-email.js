@@ -1,7 +1,8 @@
 // netlify/functions/char-welcome-email.js
 // Sends Beauty Trinity results email via Resend after onboarding completes
 
-var RESEND_KEY = process.env.RESEND_KEY;
+var RESEND_KEY  = process.env.RESEND_KEY;
+var KIT_API_KEY = process.env.KIT_API_KEY;
 
 // Full archetype descriptions for each Beauty Trinity option
 var ARCHETYPE_DESCRIPTIONS = {
@@ -202,6 +203,35 @@ exports.handler = async function(event) {
     var subject = name
       ? name + ', here are your full Beauty Trinity results ✦'
       : 'Your full Beauty Trinity results ✦';
+
+    // ── ADD TO KIT (ConvertKit) — fire and don't let failure block the email ──
+    if (KIT_API_KEY) {
+      try {
+        var kitRes = await fetch('https://api.kit.com/v4/subscribers', {
+          method:  'POST',
+          headers: {
+            'Content-Type':  'application/json',
+            'Authorization': 'Bearer ' + KIT_API_KEY
+          },
+          body: JSON.stringify({
+            email_address: email,
+            first_name:    name || undefined,
+            fields: {
+              beauty_trinity_core:   core   || undefined,
+              beauty_trinity_moon:   moon   || undefined,
+              beauty_trinity_rising: rising || undefined
+            }
+          })
+        });
+        var kitBody = await kitRes.json();
+        console.log('Kit status:', kitRes.status, JSON.stringify(kitBody).slice(0, 200));
+      } catch (kitErr) {
+        // Kit failure never blocks the results email
+        console.error('Kit error (non-fatal):', kitErr.message);
+      }
+    } else {
+      console.warn('KIT_API_KEY not set — skipping Kit subscriber creation');
+    }
 
     var resendRes = await fetch('https://api.resend.com/emails', {
       method:  'POST',
