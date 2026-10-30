@@ -99,8 +99,9 @@ exports.handler = async function(event) {
       };
     }
 
-    // ── Subscriber captured — apply event source tag async (non-blocking) ──
+    // ── Subscriber captured — fire-and-forget non-blocking tasks ────────────
     if (source) applySourceTagAsync(API_SECRET, BASE, email, source);
+    logToSheetAsync(email, firstName, glamType, moon, rising, source);
 
     return {
       statusCode: 200,
@@ -117,6 +118,49 @@ exports.handler = async function(event) {
     };
   }
 };
+
+// ── Fire-and-forget: log SGT result to Google Sheet ─────────────────────────
+function logToSheetAsync(email, firstName, glamType, moon, rising, source) {
+  var APPS_SCRIPT_URL = process.env.APPS_SCRIPT_URL;
+  if (!APPS_SCRIPT_URL) return;
+
+  (async function() {
+    try {
+      var payload = JSON.stringify({
+        type:      'sgt',
+        email:     email,
+        firstName: firstName,
+        glamType:  glamType,
+        moon:      moon,
+        rising:    rising,
+        source:    source,
+        timestamp: new Date().toISOString()
+      });
+
+      var res = await fetch(APPS_SCRIPT_URL, {
+        method:   'POST',
+        headers:  { 'Content-Type': 'application/json' },
+        body:     payload,
+        redirect: 'manual'
+      });
+
+      // Follow redirect manually (GAS 302 pattern)
+      if (res.status >= 300 && res.status < 400) {
+        var loc = res.headers.get('location');
+        if (loc) {
+          await fetch(loc, {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body:    payload
+          });
+        }
+      }
+      console.log('Sheet log status:', res.status);
+    } catch (e) {
+      console.log('Sheet log error (non-fatal):', e.message);
+    }
+  })();
+}
 
 // ── Fire-and-forget: apply event source as a second tag ─────────────────────
 function applySourceTagAsync(apiSecret, base, email, source) {
