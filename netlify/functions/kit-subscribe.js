@@ -1,5 +1,5 @@
 // netlify/functions/kit-subscribe.js
-// Adds SGT quiz subscribers to Kit using v4 API (Bearer token)
+// Adds SGT quiz subscribers to Kit using v3 API (API Secret)
 
 exports.handler = async function(event) {
   var CORS = {
@@ -33,8 +33,8 @@ exports.handler = async function(event) {
       };
     }
 
-    var API_KEY = process.env.KIT_API_KEY;
-    if (!API_KEY) {
+    var API_SECRET = process.env.KIT_API_KEY;
+    if (!API_SECRET) {
       console.error('KIT_API_KEY env var is not set');
       return {
         statusCode: 500,
@@ -43,36 +43,55 @@ exports.handler = async function(event) {
       };
     }
 
-    // ── Create / update subscriber (single API call — critical path) ───────
-    var payload = {
-      email_address: email
-    };
-    if (firstName) payload.first_name = firstName;
+    var BASE = 'https://api.convertkit.com/v3';
 
-    // Custom fields — these must exist in Kit dashboard first
-    // (Kit > Subscribers > Custom Fields)
+    // ── Step 1: Get or create the "Signature Glam Test" tag (idempotent) ────
+    var tagRes = await fetch(BASE + '/tags', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        api_secret: API_SECRET,
+        tag: { name: 'Signature Glam Test' }
+      })
+    });
+    var tagData = await tagRes.json();
+    var tagId   = tagData.id;
+    console.log('SGT tag id:', tagId, 'status:', tagRes.status);
+
+    if (!tagId) {
+      console.error('Could not get SGT tag id:', JSON.stringify(tagData));
+      return {
+        statusCode: 500,
+        headers: CORS,
+        body: JSON.stringify({ success: false, error: 'Tag lookup failed' })
+      };
+    }
+
+    // ── Step 2: Subscribe via tag — this creates or updates the subscriber ──
+    var subPayload = {
+      api_secret: API_SECRET,
+      email:      email
+    };
+    if (firstName) subPayload.first_name = firstName;
+
+    // Custom fields (must exist in Kit dashboard under Subscribers > Fields)
     var fields = {};
     if (glamType) fields.beauty_trinity_core   = glamType;
     if (moon)     fields.beauty_trinity_moon    = moon;
     if (rising)   fields.beauty_trinity_rising  = rising;
     if (source)   fields.sgt_source             = source;
-    if (Object.keys(fields).length) payload.fields = fields;
+    if (Object.keys(fields).length) subPayload.fields = fields;
 
-    var subRes = await fetch('https://api.kit.com/v4/subscribers', {
+    var subRes  = await fetch(BASE + '/tags/' + tagId + '/subscribe', {
       method:  'POST',
-      headers: {
-        'Content-Type':  'application/json',
-        'Authorization': 'Bearer ' + API_KEY
-      },
-      body: JSON.stringify(payload)
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(subPayload)
     });
-
     var subBody = await subRes.json();
-    console.log('Kit v4 subscriber response:', subRes.status, JSON.stringify(subBody).slice(0, 300));
+    console.log('Subscribe response:', subRes.status, JSON.stringify(subBody).slice(0, 300));
 
     if (!subRes.ok) {
-      // Kit returns 422 for validation errors, 401 for bad key, etc.
-      console.error('Kit subscriber creation failed:', subRes.status, JSON.stringify(subBody));
+      console.error('Subscribe failed:', subRes.status, JSON.stringify(subBody));
       return {
         statusCode: subRes.status,
         headers: CORS,
@@ -80,10 +99,8 @@ exports.handler = async function(event) {
       };
     }
 
-    // ── Subscriber created — return success ────────────────────────────────
-    // Tag assignment is non-blocking; we do NOT gate success on it.
-    // Tags are nice-to-have for segmentation but the subscriber is what matters.
-    tagSubscriberAsync(API_KEY, email, glamType, moon, rising, source);
+    // ── Subscriber captured — apply event source tag async (non-blocking) ──
+    if (source) applySourceTagAsync(API_SECRET, BASE, email, source);
 
     return {
       statusCode: 200,
@@ -101,47 +118,26 @@ exports.handler = async function(event) {
   }
 };
 
-// ── Fire-and-forget tag assignment ──────────────────────────────────────────
-// Runs after we've already returned success to the client.
-// If this fails it does NOT affect whether the subscriber was captured.
-function tagSubscriberAsync(apiKey, email, glamType, moon, rising, source) {
-  var tagNames = ['Signature Glam Test'];
-  if (source) tagNames.push(source);
-
-  // Best-effort: create tags and apply them; log errors but don't throw.
+// ── Fire-and-forget: apply event source as a second tag ─────────────────────
+function applySourceTagAsync(apiSecret, base, email, source) {
   (async function() {
     try {
-      var BASE = 'https://api.kit.com/v4';
-      for (var i = 0; i < tagNames.length; i++) {
-        try {
-          // Create tag (idempotent in Kit v4)
-          var tagRes = await fetch(BASE + '/tags', {
-            method:  'POST',
-            headers: {
-              'Content-Type':  'application/json',
-              'Authorization': 'Bearer ' + apiKey
-            },
-            body: JSON.stringify({ name: tagNames[i] })
-          });
-          var tagBody = await tagRes.json();
-          var tagId   = tagBody.tag && tagBody.tag.id;
-          if (!tagId) { console.log('No tag id for:', tagNames[i]); continue; }
+      var tagRes  = await fetch(base + '/tags', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ api_secret: apiSecret, tag: { name: source } })
+      });
+      var tagData = await tagRes.json();
+      var tagId   = tagData.id;
+      if (!tagId) return;
 
-          // Apply tag to subscriber
-          await fetch(BASE + '/tags/' + tagId + '/subscribers', {
-            method:  'POST',
-            headers: {
-              'Content-Type':  'application/json',
-              'Authorization': 'Bearer ' + apiKey
-            },
-            body: JSON.stringify({ email_address: email })
-          });
-        } catch (e) {
-          console.log('Tag error (non-fatal):', tagNames[i], e.message);
-        }
-      }
+      await fetch(base + '/tags/' + tagId + '/subscribe', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ api_secret: apiSecret, email: email })
+      });
     } catch (e) {
-      console.log('tagSubscriberAsync error (non-fatal):', e.message);
+      console.log('Source tag error (non-fatal):', e.message);
     }
   })();
 }
