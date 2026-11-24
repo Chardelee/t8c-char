@@ -45,21 +45,33 @@ exports.handler = async function(event) {
 
     var BASE = 'https://api.convertkit.com/v3';
 
-    // ── Step 1: Get or create the "Signature Glam Test" tag (idempotent) ────
-    var tagRes = await fetch(BASE + '/tags', {
-      method:  'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        api_secret: API_SECRET,
-        tag: { name: 'Signature Glam Test' }
-      })
+    // ── Step 1: Find "Signature Glam Test" tag by listing existing tags ─────
+    // Kit v3 POST /tags now returns 422 when tag name already exists,
+    // so we list first and only create if not found.
+    var tagId;
+    var listRes  = await fetch(BASE + '/tags?api_secret=' + encodeURIComponent(API_SECRET), {
+      method: 'GET', headers: { 'Content-Type': 'application/json' }
     });
-    var tagData = await tagRes.json();
-    var tagId   = tagData.id;
-    console.log('SGT tag id:', tagId, 'status:', tagRes.status);
+    var listData = await listRes.json();
+    var existing = (listData.tags || []).find(function(t) { return t.name === 'Signature Glam Test'; });
+
+    if (existing) {
+      tagId = existing.id;
+      console.log('SGT tag found via list, id:', tagId);
+    } else {
+      // Tag doesn't exist yet — create it
+      var createRes  = await fetch(BASE + '/tags', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ api_secret: API_SECRET, tag: { name: 'Signature Glam Test' } })
+      });
+      var createData = await createRes.json();
+      tagId = createData.id;
+      console.log('SGT tag created, id:', tagId, 'status:', createRes.status);
+    }
 
     if (!tagId) {
-      console.error('Could not get SGT tag id:', JSON.stringify(tagData));
+      console.error('Could not get SGT tag id. List response:', JSON.stringify(listData).slice(0, 200));
       return {
         statusCode: 500,
         headers: CORS,
