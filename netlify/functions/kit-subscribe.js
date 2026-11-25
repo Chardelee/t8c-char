@@ -134,7 +134,10 @@ exports.handler = async function(event) {
 // ── Fire-and-forget: log SGT result to Google Sheet ─────────────────────────
 function logToSheetAsync(email, firstName, glamType, moon, rising, source) {
   var APPS_SCRIPT_URL = process.env.APPS_SCRIPT_URL;
-  if (!APPS_SCRIPT_URL) return;
+  if (!APPS_SCRIPT_URL) {
+    console.log('APPS_SCRIPT_URL not set, skipping sheet log');
+    return;
+  }
 
   (async function() {
     try {
@@ -149,25 +152,18 @@ function logToSheetAsync(email, firstName, glamType, moon, rising, source) {
         timestamp: new Date().toISOString()
       });
 
+      // GAS web apps redirect POST → GET to retrieve the response.
+      // Using default redirect:'follow' lets fetch convert to GET automatically.
+      // Content-Type text/plain avoids a CORS preflight that can break GAS.
       var res = await fetch(APPS_SCRIPT_URL, {
-        method:   'POST',
-        headers:  { 'Content-Type': 'application/json' },
-        body:     payload,
-        redirect: 'manual'
+        method:  'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body:    payload
       });
 
-      // Follow redirect manually (GAS 302 pattern)
-      if (res.status >= 300 && res.status < 400) {
-        var loc = res.headers.get('location');
-        if (loc) {
-          await fetch(loc, {
-            method:  'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body:    payload
-          });
-        }
-      }
-      console.log('Sheet log status:', res.status);
+      var body = await res.text();
+      console.log('GAS status:', res.status);
+      console.log('GAS body:', body.slice(0, 150));
     } catch (e) {
       console.log('Sheet log error (non-fatal):', e.message);
     }
