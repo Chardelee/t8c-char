@@ -993,13 +993,16 @@
     charInitialMessage();
   }
 
-  function charInitialMessage() {
+  function charInitialMessage(isRetry) {
     showTyping();
     const opening = [{
       role: 'user',
       content: `Hi Char! I'm ${charUser.name}. My Sun is ${charUser.sun}${charUser.moon ? ', my Moon is ' + charUser.moon : ''}${charUser.rising ? ', and my Rising is ' + charUser.rising : ''}. Can you welcome me and tell me a little about my glam profile?`
     }];
-    callAPI(opening, true);
+    // On first attempt, pass a retry callback so a cold-start failure auto-retries once
+    callAPI(opening, true, isRetry ? null : function() {
+      setTimeout(function() { charInitialMessage(true); }, 2500);
+    });
   }
 
   // ── PHOTO UPLOAD ─────────────────────────────────────────────────────
@@ -1119,7 +1122,8 @@
   }
 
   // ── API CALL ─────────────────────────────────────────────────────────
-  function callAPI(messages, isOpening) {
+  // onFailRetry: optional callback fired instead of the error message on failure
+  function callAPI(messages, isOpening, onFailRetry) {
     document.getElementById('char-send').disabled = true;
     isTyping = true;
 
@@ -1151,6 +1155,11 @@
             { role: 'assistant', content: reply }
           ];
         }
+      } else if (onFailRetry) {
+        hideTyping();
+        isTyping = false;
+        document.getElementById('char-send').disabled = false;
+        onFailRetry();
       } else {
         addMessage('char', "hey beauty — something glitched on my end. Try again in a sec! Luv, Char 💄");
       }
@@ -1159,7 +1168,11 @@
       hideTyping();
       isTyping = false;
       document.getElementById('char-send').disabled = false;
-      addMessage('char', "hey beauty — something glitched on my end. Try again in a sec! Luv, Char 💄");
+      if (onFailRetry) {
+        onFailRetry();
+      } else {
+        addMessage('char', "hey beauty — something glitched on my end. Try again in a sec! Luv, Char 💄");
+      }
     });
   }
 
@@ -1341,7 +1354,9 @@
       var wrap = document.querySelector('.char-wrap');
       if (wrap) wrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-      charInitialMessage();
+      // Small delay so the page settles and the Netlify function warms up
+      // before the first API call fires — prevents cold-start glitch errors
+      setTimeout(charInitialMessage, 1200);
     }
   });
 
