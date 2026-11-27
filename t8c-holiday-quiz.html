@@ -531,6 +531,9 @@
     container.innerHTML = '<a class="char-cta-btn" href="' + link + '" target="_blank">✦ Talk with Char →</a>';
   }
 
+  // ── SOURCE TRACKING — reads ?source= from URL, falls back to 'T8C Holiday Hub'
+  const urlSourceParam = new URLSearchParams(window.location.search).get('source') || 'T8C Holiday Hub';
+
   // ── KIT SUBSCRIBE ─────────────────────────────────────────────────────
   function sendToKit(glamtype,moon,rising,track){
     const noticeId=track==='skin'?'t8c-notice-skin':'t8c-notice-makeup';
@@ -545,7 +548,7 @@
         moon:     moon,
         rising:   rising,
         skinType: track==='skin'?'Skin Style':'Signature Glam',
-        source:   'T8C Holiday Hub'
+        source:   urlSourceParam
       })
     })
     .then(function(res){return res.json();})

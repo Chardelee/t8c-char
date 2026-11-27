@@ -613,8 +613,12 @@
     container.innerHTML = '<a class="char-cta-btn" href="' + link + '" target="_blank">✦ Chat with Char about your results →</a>';
   }
 
+  // ── SOURCE TRACKING — reads ?source= from URL; event mode and track type still win if set
+  const urlSourceParam = new URLSearchParams(window.location.search).get('source');
+
   function getEventSource(track) {
     if (quizEventMode === 'event' && quizEventName) return quizEventName;
+    if (urlSourceParam) return urlSourceParam;
     return track === 'skin' ? 'Skin Style Test' : 'Signature Glam Test';
   }
 
