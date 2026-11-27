@@ -1296,6 +1296,54 @@
     _obs.observe(_msgContainer, { childList: true });
   }
 
+  // ── URL PARAM AUTO-LAUNCH (from SGT / Holiday quiz handoff) ──────────
+  // If ?name=...&core=...&moon=...&rising=... are present in the URL,
+  // skip the onboarding form and launch Char immediately with those results.
+  document.addEventListener('DOMContentLoaded', function() {
+    var p = new URLSearchParams(window.location.search);
+    var pName   = p.get('name');
+    var pCore   = p.get('core');
+    var pMoon   = p.get('moon');
+    var pRising = p.get('rising');
+    var pStatus = p.get('status'); // 'event' | 'member' | 'exploring'
+    var pMode   = p.get('mode');   // 'holiday' | 'villainera' | etc.
+
+    if (pName && pCore) {
+      // Set member status
+      var status = (pStatus === 'member') ? 'member' : (pStatus === 'event' ? 'event' : 'exploring');
+      charSetMemberStatus(status);
+
+      // Set event mode if applicable
+      if (pMode && pMode !== 'standard') {
+        var modeEl = document.getElementById('char-mode');
+        if (modeEl) modeEl.value = pMode;
+      }
+
+      // Set charUser directly — no form validation needed
+      charUser = { name: pName, sun: pCore, moon: pMoon || '', rising: pRising || '', isMember: status };
+
+      // Update the Trinity display header
+      var header = document.getElementById('char-header-glam');
+      if (header) {
+        header.innerHTML =
+          '✦ ' + pCore.replace('The ','') +
+          (pMoon   ? '<br>☽ ' + pMoon.replace('The ','')   : '') +
+          (pRising ? '<br>↑ ' + pRising.replace('The ','') : '');
+      }
+
+      // Skip onboarding, go straight to chat
+      var onboard = document.getElementById('char-onboard');
+      var chat    = document.getElementById('char-chat');
+      if (onboard) onboard.style.display = 'none';
+      if (chat)    chat.classList.add('active');
+
+      // Scroll into view and launch
+      var wrap = document.querySelector('.char-wrap');
+      if (wrap) wrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      charInitialMessage();
+    }
+  });
 
 </script>
 
