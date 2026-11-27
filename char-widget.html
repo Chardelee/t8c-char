@@ -1228,8 +1228,10 @@
   }
 
   function formatText(text) {
-    // Convert URLs to clickable links before other formatting
-    var linked = text.replace(/(https?:\/\/[^\s<>"')\]]+)/g, '<a href="$1" target="_blank" rel="noopener" style="color:var(--amber);text-decoration:underline;word-break:break-all;">$1</a>');
+    // Convert bare ShopMy links (go.shopmy.us/... or shopmy.us/...) to clickable links first
+    var linked = text.replace(/\b((?:go\.)?shopmy\.us\/[^\s<>"')\]]+)/g, '<a href="https://$1" target="_blank" rel="noopener" style="color:var(--amber);text-decoration:underline;word-break:break-all;">$1</a>');
+    // Convert all other https:// URLs to clickable links
+    linked = linked.replace(/(https?:\/\/[^\s<>"')\]]+)/g, '<a href="$1" target="_blank" rel="noopener" style="color:var(--amber);text-decoration:underline;word-break:break-all;">$1</a>');
     return linked
       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
       .replace(/\*(.*?)\*/g, '<em>$1</em>')
